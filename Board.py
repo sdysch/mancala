@@ -23,7 +23,10 @@ class Board:
         offset       = 5
         offset_space = 3
 
-        board_string = (offset + offset_space) * ' ' + ' '.join([str(v) for v in self.player_two_cups])
+        # player two cups are numbered right to left, so we reverse the list when printing
+        temp_player_two_cups = self.player_two_cups
+        temp_player_two_cups.reverse()
+        board_string = (offset + offset_space) * ' ' + ' '.join([str(v) for v in temp_player_two_cups])
 
         board_string += '\n'
         board_string += f'[{self.player_two_goal}]'
@@ -81,6 +84,9 @@ class Board:
     def make_player_move(self, player_number, bucket):
         ''' Iterate through board until no valid moves are left '''
 
+        if not self.is_valid_move(player_number, bucket):
+            return
+
         self.check_valid_player(player_number)
         self.check_valid_bucket(bucket)
 
@@ -90,3 +96,7 @@ class Board:
         else:
             player_cups   = self.player_two_cups
             opponent_cups = self.player_one_cups
+
+        marbles = player_cups[bucket - 1]
+        player_cups[bucket - 1] = 0
+
