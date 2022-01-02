@@ -6,9 +6,9 @@ Exploring different strategies for [mancala](https://en.wikipedia.org/wiki/Manca
 ## Bucket numbering
 * A board is represented like so:
 ```
-		6 6 6 6 6 6
+        6 6 6 6 6 6
 [0]                      [0]
-		6 6 6 6 6 6
+        6 6 6 6 6 6
 
 ```
 * Player 1's buckets are numbered from left to right
@@ -17,10 +17,10 @@ Exploring different strategies for [mancala](https://en.wikipedia.org/wiki/Manca
 ```
 Bucket  6 5 4 3 2 1
 
-		6 6 6 6 6 6
+        6 6 6 6 6 6
 [0]                      [0]
-		6 6 6 6 6 6
-		
+        6 6 6 6 6 6
+        
 Bucket  1 2 3 4 5 6
 
 ```
