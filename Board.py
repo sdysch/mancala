@@ -43,6 +43,15 @@ class Board:
 
         return board_string
 
+    def __eq__(self, other):
+        if self.player_one_goal == other.player_one_goal \
+        and self.player_two_goal == other.player_two_goal \
+        and self.player_one_cups == other.player_one_cups \
+        and self.player_two_cups == other.player_two_cups:
+            return True
+        else:
+            return False
+
     def check_valid_player(self, player_number):
         ''' Check is player number is valid '''
 
