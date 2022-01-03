@@ -38,6 +38,8 @@ class Board:
 
         board_string += (offset + offset_space) * ' ' + ' '.join([str(v) for v in self.player_one_cups])
 
+        board_string += '\n'
+
         return board_string
 
     def check_valid_player(self, player_number):
@@ -99,10 +101,11 @@ class Board:
             return
 
         # starting position
-        if bucket == self._NCUPS:
-            position = self._NCUPS
-        else:
-            position = bucket + 1
+        # if bucket == self._NCUPS:
+            # position = self._NCUPS
+        # else:
+            # position = bucket + 1
+        position = bucket + 1
 
         # whose cups we are updating
         original_player = player_number
@@ -113,13 +116,14 @@ class Board:
 
         # distribute the marbles across the board
         for _ in range(marbles):
+            # print(self)
+            # print(position)
             # we have reached the edge of the board
             if position == self._NCUPS + 1:
-                ended_in_goal = True
-
                 # only update player's goal if we have been iterating over their cups
                 # otherwise, we need to update the initial cup of the other player
                 if updating_cups == original_player:
+                    ended_in_goal = True
                     position = 1
                     if updating_cups == 1:
                         self.player_one_goal += 1
