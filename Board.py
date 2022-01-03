@@ -1,12 +1,13 @@
 class Board:
     ''' Class which holds a representation of a Mancala board '''
 
-    _NCUPS = 6
+    def __init__(self, *args, **kwargs):
 
-    def __init__(self):
-        # TODO - other initial configurations? can just be set after class is initiated
-        self.player_one_cups = self._NCUPS * [6]
-        self.player_two_cups = self._NCUPS * [6]
+        self.n_start_marbles = kwargs.get('n_start_marbles', 6)
+        self._NCUPS          = kwargs.get('n_cups',          6)
+
+        self.player_one_cups = self._NCUPS * [self.n_start_marbles]
+        self.player_two_cups = self._NCUPS * [self.n_start_marbles]
 
         self.player_one_goal = 0
         self.player_two_goal = 0
