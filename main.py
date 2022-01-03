@@ -3,9 +3,12 @@ def main(args):
     from Board import Board
 
     test_board = Board()
-    print(test_board)
+    #print(test_board)
 
-    test_board.player_two_cups = [0, 1, 2, 3, 4, 5]
+    test_board.player_one_cups = [6, 0, 0, 0, 0, 0]
+    test_board.player_two_cups = [0, 0, 0, 0, 0, 0]
+    print(test_board)
+    test_board.make_player_move(1, 1)
     print(test_board)
 
 if __name__ == '__main__':
