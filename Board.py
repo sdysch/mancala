@@ -24,7 +24,8 @@ class Board:
         offset_space = 3
 
         # player two cups are numbered right to left, so we reverse the list when printing
-        temp_player_two_cups = self.player_two_cups
+        # deep copy, because we do not want to actually reverse the list in place
+        temp_player_two_cups = [v for v in self.player_two_cups]
         temp_player_two_cups.reverse()
         board_string = (offset + offset_space) * ' ' + ' '.join([str(v) for v in temp_player_two_cups])
 
@@ -118,8 +119,9 @@ class Board:
                 # now we are at the edge of the board, switch whose goal we are updating
                 updating_cups = 1 if updating_cups == 2 else 2
 
+                # reset position for next player
                 ended_in_goal = True
-                position = 1
+                position = 0
 
             else:
                 ended_in_goal = False
