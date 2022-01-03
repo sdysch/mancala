@@ -1,0 +1,11 @@
+name: Test
+on: [push]
+jobs:
+    Test:
+        runs-on: "ubuntu-latest"
+        steps:
+            - name: "Checkout repository"
+              uses: "actions/checkout@v2"
+            - run: |
+                source setup.sh
+                python3 -m unittest discover tests
