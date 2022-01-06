@@ -35,5 +35,23 @@ class TestBoard(unittest.TestCase):
 
         self.assertEqual(self.b, result)
 
+    def test_no_more_moves_1(self):
+        self.b.player_one_cups = [1, 1, 1, 1, 1, 1]
+        self.b.player_two_cups = [0, 0, 0, 0, 0, 0]
+
+        self.assertEqual(self.b.no_more_moves(), True)
+
+    def test_no_more_moves_2(self):
+        self.b.player_one_cups = [0, 0, 0, 0, 0, 0]
+        self.b.player_two_cups = [0, 0, 4, 0, 0, 0]
+
+        self.assertEqual(self.b.no_more_moves(), True)
+
+    def test_no_more_moves_2(self):
+        self.b.player_one_cups = [0, 3, 0, 0, 0, 0]
+        self.b.player_two_cups = [0, 0, 4, 0, 0, 0]
+
+        self.assertEqual(self.b.no_more_moves(), False)
+
 if __name__ == '__main__':
     unittest.main()
