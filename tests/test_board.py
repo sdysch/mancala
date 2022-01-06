@@ -63,5 +63,25 @@ class TestBoard(unittest.TestCase):
 
         self.assertEqual(self.b.no_more_moves(), False)
 
+    def test_end_in_goal_1(self):
+        self.b.player_one_cups = [0, 0, 0, 3, 0, 0]
+
+        self.assertEqual(self.b.make_player_move(1, 4), True)
+
+    def test_end_in_goal_2(self):
+        self.b.player_two_cups = [0, 0, 0, 3, 0, 0]
+
+        self.assertEqual(self.b.make_player_move(2, 4), True)
+
+    def test_not_end_in_goal_1(self):
+        self.b.player_one_cups = [0, 0, 0, 4, 0, 0]
+
+        self.assertEqual(self.b.make_player_move(1, 4), False)
+
+    def test_not_end_in_goal_2(self):
+        self.b.player_two_cups = [0, 2, 0, 0, 0, 0]
+
+        self.assertEqual(self.b.make_player_move(2, 2), False)
+
 if __name__ == '__main__':
     unittest.main()
