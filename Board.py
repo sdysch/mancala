@@ -162,3 +162,7 @@ class Board:
                 position += 1
 
         return ended_in_goal
+
+    def no_more_moves(self):
+        ''' returns True if there are no more moves (one side of the board is empty) else False '''
+        return ( not any(self.player_one_cups) or not any(self.player_two_cups) )
