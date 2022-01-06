@@ -35,6 +35,16 @@ class TestBoard(unittest.TestCase):
 
         self.assertEqual(self.b, result)
 
+    def test_player_one_move_fail(self):
+        self.b.player_one_cups = [0, 0, 7, 0, 0, 0]
+
+        self.assertRaises(ValueError, self.b.make_player_move, 1, 0)
+
+    def test_player_two_move_fail(self):
+        self.b.player_two_cups = [0, 0, 7, 0, 0, 0]
+
+        self.assertRaises(ValueError, self.b.make_player_move, 2, 0)
+
     def test_no_more_moves_1(self):
         self.b.player_one_cups = [1, 1, 1, 1, 1, 1]
         self.b.player_two_cups = [0, 0, 0, 0, 0, 0]
