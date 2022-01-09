@@ -105,29 +105,23 @@ class Board:
         self.check_valid_bucket(bucket)
 
         # get player/opponent cups and goals
-        if player_number == 1:
-            marbles = self.player_one_cups[bucket - 1] if side_of_board == 1 else self.player_two_cups[bucket - 1]
-            if side_of_board == 1:
-                self.player_one_cups[bucket - 1] = 0
-            else:
-                self.player_two_cups[bucket - 1] = 0
+        if side_of_board == 1:
+            marbles = self.player_one_cups[bucket - 1]
+            self.player_one_cups[bucket - 1] = 0
         else:
-            marbles = self.player_two_cups[bucket - 1] if side_of_board == 2 else self.player_one_cups[bucket - 1]
-            if side_of_board == 2:
-                self.player_two_cups[bucket - 1] = 0
-            else:
-                self.player_one_cups[bucket - 1] == 0
+            marbles = self.player_two_cups[bucket - 1]
+            self.player_two_cups[bucket - 1] = 0
 
         # if there are no marbles, this is not a valid move and we return
         if marbles == 0:
-            return
+            raise ValueError('A bucket with 0 marbles was chosen. This is invalid.')
 
         # starting position
         position = bucket + 1
 
         # whose cups we are updating
         original_player = player_number
-        updating_cups   = player_number
+        updating_cups   = side_of_board
 
         # flag to keep track if we ended in a player's goal
         ended_in_goal = False
@@ -143,7 +137,7 @@ class Board:
                 if updating_cups == original_player:
                     ended_in_goal = True
                     position = 1
-                    if updating_cups == 1:
+                    if original_player == 1:
                         self.player_one_goal += 1
                     else:
                         self.player_two_goal += 1
@@ -169,11 +163,21 @@ class Board:
                 ended_in_goal = False
                 position += 1
 
+
         # return the side of the board we ended on (1 or 2), and the bucket we ended on
         # if we ended in the player's goal (ended_in_goal==True), return position of 0, updating_cups None
         if ended_in_goal:
             position = 0
             updating_cups = None
+
+        # need to subtract 1 from position, as we have incremented the position once too many inside the for loop
+        elif position == 1:
+            updating_cups = 1 if updating_cups == 2 else 2
+            position = self._NCUPS
+
+        else:
+            position -= 1
+
         return updating_cups, position
 
     def no_more_moves(self):
@@ -211,16 +215,14 @@ class Board:
         elif position == 1:
             new_side = 1 if side == 2 else 2
             cups = self.player_one_cups if new_side == 1 else self.player_two_cups
-            if cups[self._NCUPS] == 1:
+            if cups[self._NCUPS - 1] == 1:
                 return True
             else:
                 return False
 
         else:
             buckets = self.player_one_cups if side == 1 else self.player_two_cups
-            # This could be confusing. the content of marbles at 'position' is buckets[position-1].
-            # _However_, we want the content of marbles at position-1, i.e. buckets[position-2]
-            if buckets[position - 2] == 1:
+            if buckets[position - 1] == 1:
                 return True
             else:
                 return False

@@ -12,12 +12,13 @@ def main(args):
     side, position = board.make_player_move(player, start_choice, start_side)
 
     while not board.no_more_moves():
+        print(board)
 
         # ended in player goal - they get a new move
         if side == None and position == 0:
             moves = board.available_moves(player)
             # dummy strategy for now
-            board.make_player_move(player, moves[0], player)
+            side, position = board.make_player_move(player, moves[0], player)
 
         # if the last marble was put into an empty bucket, the players switch
         elif board.last_bucket_empty(side, position):
@@ -25,13 +26,11 @@ def main(args):
             side_of_board = player
             moves = board.available_moves(player)
             # dummy strategy for now
-            board.make_player_move(player, moves[0], side_of_board)
+            side, position = board.make_player_move(player, moves[0], side_of_board)
 
         # same player continues from the position the previous move terminated in
         else:
-            moves = board.available_moves(player)
-            # dummy strategy for now
-            board.make_player_move(player, moves[0], side)
+            side, position = board.make_player_move(player, position, side)
             
 
     print(board)
