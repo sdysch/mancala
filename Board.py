@@ -53,10 +53,16 @@ class Board:
             return False
 
     def check_valid_player(self, player_number):
-        ''' Check is player number is valid '''
+        ''' Check if player number is valid '''
 
         if player_number not in [1, 2]:
             raise ValueError('Player number must be either 1 or 2')
+
+    def check_valid_side(self, side):
+        ''' Check if side number is valid '''
+
+        if side not in [1, 2]:
+            raise ValueError('Side must be either 1 or 2')
 
     def check_valid_bucket(self, bucket):
         ''' Check if chosen bucket is valid '''
@@ -93,7 +99,7 @@ class Board:
         return opponent_goal
 
     def make_player_move(self, player_number, bucket, side_of_board):
-        ''' Iterate through board until valid moves are left '''
+        ''' Iterate through board until valid moves are left. Returns the side of the board, and position of next move'''
 
         self.check_valid_player(player_number)
         self.check_valid_bucket(bucket)
@@ -191,3 +197,30 @@ class Board:
             if bucket != 0:
                 buckets_with_marbles.append(i+1)
         return buckets_with_marbles
+
+    def last_bucket_empty(self, position, side):
+        ''' returns True if the bucket at position-1 was empty before this move finished '''
+
+        self.check_valid_bucket(position)
+        self.check_valid_side(side)
+
+        if position == 0:
+            raise ValueError('Position == 0 means that the previous move ended in a player goal. Please check your logic')
+
+        # ended in position 1 - we need to check buckets on previous side
+        elif position == 1:
+            new_side = 1 if side == 2 else 2
+            cups = self.player_one_cups if new_side == 1 else self.player_two_cups
+            if cups[self._NCUPS] == 1:
+                return True
+            else:
+                return False
+
+        else:
+            buckets = self.player_one_cups if side == 1 else self.player_two_cups
+            # This could be confusing. the content of marbles at 'position' is buckets[position-1].
+            # _However_, we want the content of marbles at position-1, i.e. buckets[position-2]
+            if buckets[position - 2] == 1:
+                return True
+            else:
+                return False
