@@ -92,7 +92,7 @@ class Board:
 
         return opponent_goal
 
-    def make_player_move(self, player_number, bucket):
+    def make_player_move(self, player_number, bucket, side_of_board):
         ''' Iterate through board until valid moves are left '''
 
         self.check_valid_player(player_number)
@@ -100,21 +100,23 @@ class Board:
 
         # get player/opponent cups and goals
         if player_number == 1:
-            marbles = self.player_one_cups[bucket - 1]
-            self.player_one_cups[bucket - 1] = 0
+            marbles = self.player_one_cups[bucket - 1] if side_of_board == 1 else self.player_two_cups[bucket - 1]
+            if side_of_board == 1:
+                self.player_one_cups[bucket - 1] = 0
+            else:
+                self.player_two_cups[bucket - 1] = 0
         else:
-            marbles = self.player_two_cups[bucket - 1]
-            self.player_two_cups[bucket - 1] = 0
+            marbles = self.player_two_cups[bucket - 1] if side_of_board == 2 else self.player_one_cups[bucket - 1]
+            if side_of_board == 2:
+                self.player_two_cups[bucket - 1] = 0
+            else:
+                self.player_one_cups[bucket - 1] == 0
 
         # if there are no marbles, this is not a valid move and we return
         if marbles == 0:
             return
 
         # starting position
-        # if bucket == self._NCUPS:
-            # position = self._NCUPS
-        # else:
-            # position = bucket + 1
         position = bucket + 1
 
         # whose cups we are updating
@@ -161,7 +163,12 @@ class Board:
                 ended_in_goal = False
                 position += 1
 
-        return ended_in_goal
+        # return the side of the board we ended on (1 or 2), and the bucket we ended on
+        # if we ended in the player's goal (ended_in_goal==True), return position of 0, updating_cups None
+        if ended_in_goal:
+            position = 0
+            updating_cups = None
+        return updating_cups, position
 
     def no_more_moves(self):
         ''' returns True if there are no more moves (one side of the board is empty) else False '''

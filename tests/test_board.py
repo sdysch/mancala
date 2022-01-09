@@ -13,7 +13,7 @@ class TestBoard(unittest.TestCase):
         self.b.player_one_cups = [0, 0, 0, 0, 0, 6]
         self.b.player_two_cups = [0, 0, 0, 0, 0, 0]
 
-        self.b.make_player_move(1, 6)
+        self.b.make_player_move(1, 6, 1)
 
         result = Board()
         result.player_one_goal = 1
@@ -26,7 +26,7 @@ class TestBoard(unittest.TestCase):
         self.b.player_one_cups = [1, 1, 1, 1, 1, 1]
         self.b.player_two_cups = [0, 0, 7, 0, 0, 0]
 
-        self.b.make_player_move(2, 3)
+        self.b.make_player_move(2, 3, 2)
 
         result = Board()
         result.player_two_goal = 1
@@ -38,12 +38,12 @@ class TestBoard(unittest.TestCase):
     def test_player_one_move_fail(self):
         self.b.player_one_cups = [0, 0, 7, 0, 0, 0]
 
-        self.assertRaises(ValueError, self.b.make_player_move, 1, 0)
+        self.assertRaises(ValueError, self.b.make_player_move, 1, 0, 1)
 
     def test_player_two_move_fail(self):
         self.b.player_two_cups = [0, 0, 7, 0, 0, 0]
 
-        self.assertRaises(ValueError, self.b.make_player_move, 2, 0)
+        self.assertRaises(ValueError, self.b.make_player_move, 2, 0, 2)
 
     def test_no_more_moves_1(self):
         self.b.player_one_cups = [1, 1, 1, 1, 1, 1]
@@ -66,22 +66,12 @@ class TestBoard(unittest.TestCase):
     def test_end_in_goal_1(self):
         self.b.player_one_cups = [0, 0, 0, 3, 0, 0]
 
-        self.assertEqual(self.b.make_player_move(1, 4), True)
+        self.assertEqual(self.b.make_player_move(1, 4, 1), (None, 0))
 
     def test_end_in_goal_2(self):
         self.b.player_two_cups = [0, 0, 0, 3, 0, 0]
 
-        self.assertEqual(self.b.make_player_move(2, 4), True)
-
-    def test_not_end_in_goal_1(self):
-        self.b.player_one_cups = [0, 0, 0, 4, 0, 0]
-
-        self.assertEqual(self.b.make_player_move(1, 4), False)
-
-    def test_not_end_in_goal_2(self):
-        self.b.player_two_cups = [0, 2, 0, 0, 0, 0]
-
-        self.assertEqual(self.b.make_player_move(2, 2), False)
+        self.assertEqual(self.b.make_player_move(2, 4, 2), (None, 0))
 
 if __name__ == '__main__':
     unittest.main()
