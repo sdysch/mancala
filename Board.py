@@ -12,6 +12,9 @@ class Board:
         self.player_one_goal = 0
         self.player_two_goal = 0
 
+        self.n_moves_player_one = 0
+        self.n_moves_player_two = 0
+
     def __str__(self):
         '''
         format the board in a pretty string: 
@@ -51,6 +54,10 @@ class Board:
             return True
         else:
             return False
+
+    @property
+    def n_moves(self):
+        return self.n_moves_player_one + self.n_moves_player_two
 
     def check_valid_player(self, player_number):
         ''' Check if player number is valid '''
@@ -103,6 +110,13 @@ class Board:
 
         self.check_valid_player(player_number)
         self.check_valid_bucket(bucket)
+
+        # this is a valid move, so increment counters
+        if player_number == 1:
+            self.n_moves_player_one += 1
+
+        elif player_number == 2:
+            self.n_moves_player_two += 1
 
         # get player/opponent cups and goals
         if side_of_board == 1:
