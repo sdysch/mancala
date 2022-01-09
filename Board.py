@@ -111,17 +111,11 @@ class Board:
         self.check_valid_player(player_number)
         self.check_valid_bucket(bucket)
 
-        # this is a valid move, so increment counters
-        if player_number == 1:
-            self.n_moves_player_one += 1
-
-        elif player_number == 2:
-            self.n_moves_player_two += 1
-
-        # get player/opponent cups and goals
+        # get the number of marbles from the chosen position, reset this bucket
         if side_of_board == 1:
             marbles = self.player_one_cups[bucket - 1]
             self.player_one_cups[bucket - 1] = 0
+
         else:
             marbles = self.player_two_cups[bucket - 1]
             self.player_two_cups[bucket - 1] = 0
@@ -130,19 +124,24 @@ class Board:
         if marbles == 0:
             raise ValueError('A bucket with 0 marbles was chosen. This is invalid.')
 
+        # passed all validity checks - this is a valid move, so increment counters
+        if player_number == 1:
+            self.n_moves_player_one += 1
+
+        elif player_number == 2:
+            self.n_moves_player_two += 1
+
         # starting position
         position = bucket + 1
 
         # whose cups we are updating
-        updating_cups   = side_of_board
+        updating_cups = side_of_board
 
         # flag to keep track if we ended in a player's goal
         ended_in_goal = False
 
         # distribute the marbles across the board
         for _ in range(marbles):
-            # print(self)
-            # print(position)
             # we have reached the edge of the board
             if position == self._NCUPS + 1:
                 # only update player's goal if we have been iterating over their cups
@@ -177,8 +176,8 @@ class Board:
                 position += 1
 
 
-        # return the side of the board we ended on (1 or 2), and the bucket we ended on
-        # if we ended in the player's goal (ended_in_goal==True), return position of 0, updating_cups None
+        # store the side of the board we ended on (1 or 2), and the bucket we ended on
+        # if we ended in the player's goal (ended_in_goal==True), store position of 0, updating_cups None
         if ended_in_goal:
             position = 0
             updating_cups = None
