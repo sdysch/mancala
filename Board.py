@@ -173,3 +173,21 @@ class Board:
     def no_more_moves(self):
         ''' returns True if there are no more moves (one side of the board is empty) else False '''
         return ( not any(self.player_one_cups) or not any(self.player_two_cups) )
+    
+    def available_moves(self, player):
+        ''' returns a list of valid moves for this player '''
+        self.check_valid_player(player)
+
+        if self.no_more_moves():
+            return []
+
+        if player == 1:
+            buckets = self.player_one_cups
+        else:
+            buckets = self.player_two_cups
+
+        buckets_with_marbles = []
+        for i, bucket in enumerate(buckets):
+            if bucket != 0:
+                buckets_with_marbles.append(i+1)
+        return buckets_with_marbles

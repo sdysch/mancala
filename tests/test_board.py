@@ -73,5 +73,14 @@ class TestBoard(unittest.TestCase):
 
         self.assertEqual(self.b.make_player_move(2, 4, 2), (None, 0))
 
+    def test_available_moves_1(self):
+
+        self.assertEqual(self.b.available_moves(1), [v + 1 for v in range(6)])
+
+    def test_available_moves_2(self):
+        self.b.player_one_cups = [0, 0, 0, 0, 0, 0]
+
+        self.assertEqual(self.b.available_moves(1), [])
+
 if __name__ == '__main__':
     unittest.main()
