@@ -23,7 +23,7 @@ def main(args):
             board.make_player_move(player, moves[0], player)
 
         # check if the last marble was put into an empty bucket
-        elif board
+        elif board.last_bucket_empty(side, position)
 
         # next players move
         else:

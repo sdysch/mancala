@@ -9,7 +9,7 @@ def main(args):
     print(board)
     side, position = board.make_player_move(1, 5, 1)
     print(position)
-    print(board.last_bucket_empty(position, side))
+    print(board.last_bucket_empty(side, position))
 
     print(board)
 

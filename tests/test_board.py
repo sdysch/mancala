@@ -92,14 +92,14 @@ class TestBoard(unittest.TestCase):
         self.b.player_two_cups = [0, 0, 0, 0, 4, 0]
         side, position = self.b.make_player_move(1, 5, 1)
 
-        self.assertEqual(self.b.last_bucket_empty(position, side), True)
+        self.assertEqual(self.b.last_bucket_empty(side, position), True)
 
     def test_last_bucket_empty_3(self):
 
         self.b.player_one_cups = [0, 3, 0, 0, 0, 0]
         side, position = self.b.make_player_move(1, 2, 1)
 
-        self.assertEqual(self.b.last_bucket_empty(position, side), True)
+        self.assertEqual(self.b.last_bucket_empty(side, position), True)
 
     def test_last_bucket_empty_4(self):
 
@@ -107,14 +107,14 @@ class TestBoard(unittest.TestCase):
         self.b.player_two_cups = [0, 6, 0, 0, 0, 3]
         side, position = self.b.make_player_move(2, 6, 2)
 
-        self.assertEqual(self.b.last_bucket_empty(position, side), True)
+        self.assertEqual(self.b.last_bucket_empty(side, position), True)
 
     def test_last_bucket_empty_5(self):
 
         self.b.player_two_cups = [0, 3, 0, 0, 0, 3]
         side, position = self.b.make_player_move(2, 2, 2)
 
-        self.assertEqual(self.b.last_bucket_empty(position, side), True)
+        self.assertEqual(self.b.last_bucket_empty(side, position), True)
 
 if __name__ == '__main__':
     unittest.main()

@@ -198,7 +198,7 @@ class Board:
                 buckets_with_marbles.append(i+1)
         return buckets_with_marbles
 
-    def last_bucket_empty(self, position, side):
+    def last_bucket_empty(self, side, position):
         ''' returns True if the bucket at position-1 was empty before this move finished '''
 
         self.check_valid_bucket(position)
