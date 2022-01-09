@@ -22,7 +22,7 @@ def main(args):
 
         # if the last marble was put into an empty bucket, the players switch
         elif board.last_bucket_empty(side, position):
-            player = 1 if player == 2 else 1
+            player = 1 if player == 2 else 2
             side_of_board = player
             moves = board.available_moves(player)
             # dummy strategy for now

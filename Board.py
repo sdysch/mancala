@@ -120,7 +120,6 @@ class Board:
         position = bucket + 1
 
         # whose cups we are updating
-        original_player = player_number
         updating_cups   = side_of_board
 
         # flag to keep track if we ended in a player's goal
@@ -134,10 +133,10 @@ class Board:
             if position == self._NCUPS + 1:
                 # only update player's goal if we have been iterating over their cups
                 # otherwise, we need to update the initial cup of the other player
-                if updating_cups == original_player:
+                if updating_cups == player_number:
                     ended_in_goal = True
                     position = 1
-                    if original_player == 1:
+                    if player_number == 1:
                         self.player_one_goal += 1
                     else:
                         self.player_two_goal += 1
