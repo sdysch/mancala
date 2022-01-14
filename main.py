@@ -31,10 +31,11 @@ def main(args):
         else:
             side, position = board.make_player_move(player, position, side)
             
+    print('\n' + 100 * '=')
+    print(f'Final board layout:\n {board}')
+    board.calculate_final_board_scores()
 
     print('\n' + 100 * '=')
-    print('Finished game. Final layout:')
-    print(board)
     print(f'Player 1 score: {board.player_one_goal}')
     print(f'Player 2 score: {board.player_two_goal}')
     print(f'Player 1 moves: {board.n_moves_player_one}')

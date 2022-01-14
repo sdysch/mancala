@@ -257,3 +257,18 @@ class Board:
                 return True
             else:
                 return False
+
+    def calculate_final_board_scores(self):
+        ''' calculates the final player scores '''
+
+        if not self.no_more_moves():
+            print(f'There are still valid moves on the board:\n{self}')
+            return
+        
+        # add the remaining marbles to the goal of the player who emptied their side
+        if any(self.player_two_cups):
+            self.player_one_goal += sum(self.player_two_cups)
+            self.player_two_cups = [0 for _ in self.player_two_cups]
+        else:
+            self.player_two_goal += sum(self.player_one_cups)
+            self.player_one_cups = [0 for _ in self.player_one_cups]
