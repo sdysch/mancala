@@ -89,6 +89,25 @@ class Board:
         self.check_valid_player(player_number)
         return self.player_one_cups if player_number == 2 else self.player_two_cups
 
+    def update_player_cups(self, player_number, bucket, value):
+        ''' update the player_number's bucket with value '''
+
+        self.check_valid_player(player_number)
+        self.check_valid_bucket(bucket)
+
+        if player_number == 1:
+            self.player_one_cups[bucket - 1] += value
+        else:
+            self.player_two_cups[bucket - 1] += value
+
+    def update_opponent_cups(self, player_number, bucket, value):
+        if player_number == 1:
+            return self.update_player_cups(2, bucket, value)
+        elif player_number == 2:
+            return self.update_player_cups(1, bucket, value)
+        else:
+            raise ValueError(f'Invalid player number {player_number}')
+
     def get_player_goal(self, player_number):
         ''' get the goal for player_number '''
 
@@ -104,6 +123,15 @@ class Board:
         opponent_goal = self.player_one_goal if player_number == 1 else self.player_two_goal
 
         return opponent_goal
+
+    def update_player_goal(self, player_number, value):
+        ''' update the goal for player_number with value'''
+
+        self.check_valid_player(player_number)
+        if player_number == 1:
+            self.player_one_goal += value
+        else:
+            self.player_two_goal += value
 
     def make_player_move(self, player_number, bucket, side_of_board):
         ''' Iterate through board until valid moves are left. Returns the side of the board, and position of next move'''
@@ -144,22 +172,17 @@ class Board:
         for _ in range(marbles):
             # we have reached the edge of the board
             if position == self._NCUPS + 1:
-                # only update player's goal if we have been iterating over their cups
-                # otherwise, we need to update the initial cup of the other player
+
+                # if we have been iterating over the player's cups, update their goal
+                # else, update the _initial_ cup of the other player
                 if updating_cups == player_number:
                     ended_in_goal = True
                     position = 1
-                    if player_number == 1:
-                        self.player_one_goal += 1
-                    else:
-                        self.player_two_goal += 1
+                    self.update_player_goal(player_number, 1)
 
                 else:
                     position = 2
-                    if updating_cups == 1:
-                        self.player_two_cups[0] += 1
-                    else:
-                        self.player_one_cups[0] += 1
+                    self.update_opponent_cups(updating_cups, 1, 1)
 
                 # switch whose goal we are updating
                 updating_cups = 1 if updating_cups == 2 else 2
