@@ -189,12 +189,7 @@ class Board:
 
             # not yet reached the end of the board
             else:
-                if updating_cups == 1:
-                    self.player_one_cups[position - 1] += 1
-                else:
-                    self.player_two_cups[position - 1] += 1
-
-                # update position for next turn
+                self.update_player_cups(updating_cups, position, 1)
                 ended_in_goal = False
                 position += 1
 
