@@ -226,11 +226,7 @@ class Board:
         if self.no_more_moves():
             return []
 
-        if player == 1:
-            buckets = self.player_one_cups
-        else:
-            buckets = self.player_two_cups
-
+        buckets = self.get_player_cups(player)
         buckets_with_marbles = []
         for i, bucket in enumerate(buckets):
             if bucket != 0:
@@ -249,14 +245,14 @@ class Board:
         # ended in position 1 - we need to check buckets on previous side
         elif position == 1:
             new_side = 1 if side == 2 else 2
-            cups = self.player_one_cups if new_side == 1 else self.player_two_cups
+            cups = self.get_player_cups(new_side)
             if cups[self._NCUPS - 1] == 1:
                 return True
             else:
                 return False
 
         else:
-            buckets = self.player_one_cups if side == 1 else self.player_two_cups
+            buckets = self.get_player_cups(side)
             if buckets[position - 1] == 1:
                 return True
             else:

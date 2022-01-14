@@ -13,7 +13,6 @@ def main(args):
 
     while not board.no_more_moves():
         print(board)
-
         # ended in player goal - they get a new move
         if side == None and position == 0:
             moves = board.available_moves(player)
@@ -39,7 +38,7 @@ def main(args):
     print(f'Player 1 score: {board.player_one_goal}')
     print(f'Player 2 score: {board.player_two_goal}')
     print(f'Player 1 moves: {board.n_moves_player_one}')
-    print(f'layer 2 moves: {board.n_moves_player_two}')
+    print(f'Player 2 moves: {board.n_moves_player_two}')
     print(f'Total moves: {board.n_moves}')
 
 
