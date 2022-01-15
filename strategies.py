@@ -14,7 +14,8 @@ def main(args):
         raise ValueError(f'Strategy {args.strategy} is not recognised')
     else:
         result = run_random_trials(args)
-    print(result)
+        print(f'Saving output to {args.output}')
+        result.to_csv(args.output, index=False)
 
 # ====================================================================================================
 
@@ -175,6 +176,11 @@ if __name__ == '__main__':
             default = 'random', 
             type = str,
             help = 'Strategy to choose moves. Default: random')
+
+    parser.add_argument('-o', '--output',
+            default = 'data/output.csv', 
+            type = str,
+            help = 'Location to save output file to')
 
     args = parser.parse_args()
 
