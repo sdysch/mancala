@@ -40,7 +40,8 @@ def run_random_trials(args):
     import time
     start_time = time.time()
 
-    # TODO multithreading?
+    # TODO multithreading? This is essentially O(n), so it probably won't do much
+    # Maybe multi-processing?
     for game in range(n_games):
         # use game iteration as seed for reproducability
         seed = game + 1
