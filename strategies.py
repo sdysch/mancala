@@ -27,12 +27,11 @@ def run_random_trials(args):
 
     # data structure to store results
     columns = [
-        'player_1_result',
-        'player_2_result',
         'player_1_score',
         'player_2_score',
         'player_1_moves',
         'player_2_moves',
+        'total_moves'
     ]
 
     result = pd.DataFrame(columns=columns)
@@ -45,7 +44,8 @@ def run_random_trials(args):
     for game in range(n_games):
         # use game iteration as seed for reproducability
         seed = game + 1
-        result.append(run_random_game(seed))
+        df = run_random_game(seed)
+        result = result.append(df, ignore_index=True)
 
     print(f'Ran {n_games} iterations in {time.time() - start_time} seconds')
 
@@ -60,11 +60,14 @@ def run_random_game(seed):
     board = Board()
 
     board = make_moves(board, strategy='random', seed=seed)
-    # print(f'Player 1 score: {board.player_one_goal}')
-    # print(f'Player 2 score: {board.player_two_goal}')
-    # print(f'Player 1 moves: {board.n_moves_player_one}')
-    # print(f'Player 2 moves: {board.n_moves_player_two}')
-    # print(f'Total moves: {board.n_moves}')
+    results = {
+        'player_1_score' : board.player_one_goal,
+        'player_2_score' : board.player_two_goal,
+        'player_1_moves' : board.n_moves_player_one,
+        'player_2_moves' : board.n_moves_player_two,
+        'total_moves'    : board.n_moves,
+    }
+    return results
 
 # ====================================================================================================
 
