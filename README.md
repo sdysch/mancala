@@ -24,3 +24,11 @@ Bucket  6 5 4 3 2 1
 Bucket  1 2 3 4 5 6
 
 ```
+## Strategies
+- [ ] Random:
+	* Player's moves are selected with equal probabilitiy from available moves
+- [ ] Max score:
+	* Player's moves are chosen by the one which maximises the increase in score from the move
+	* Requires implementation of deep copying of Board class
+- [ ] Minimax algorithm:
+	* More complicated, requires depth parameter and alpha/beta pruning (for no crazy runtimes)
