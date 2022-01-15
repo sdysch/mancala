@@ -14,6 +14,7 @@ def main(args):
         raise ValueError(f'Strategy {args.strategy} is not recognised')
     else:
         result = run_random_trials(args)
+    print(result)
 
 # ====================================================================================================
 
@@ -31,7 +32,11 @@ def run_random_trials(args):
         'player_2_score',
         'player_1_moves',
         'player_2_moves',
-        'total_moves'
+        'total_moves',
+        'n_start_marbles',
+        'n_cups',
+        'player_1_result',
+        'player_2_result'
     ]
 
     result = pd.DataFrame(columns=columns)
@@ -61,12 +66,27 @@ def run_random_game(seed):
     board = Board()
 
     board = make_moves(board, strategy='random', seed=seed)
+
+    if board.player_one_goal > board.player_two_goal:
+        player_1_result = 'win'
+        player_2_result = 'lose'
+    elif board.player_two_goal > board.player_one_goal:
+        player_1_result = 'lose'
+        player_2_result = 'win'
+    elif board.player_two_goal == board.player_one_goal:
+        player_1_result = 'draw'
+        player_2_result = 'draw'
+
     results = {
-        'player_1_score' : board.player_one_goal,
-        'player_2_score' : board.player_two_goal,
-        'player_1_moves' : board.n_moves_player_one,
-        'player_2_moves' : board.n_moves_player_two,
-        'total_moves'    : board.n_moves,
+        'player_1_score'  : board.player_one_goal,
+        'player_2_score'  : board.player_two_goal,
+        'player_1_moves'  : board.n_moves_player_one,
+        'player_2_moves'  : board.n_moves_player_two,
+        'total_moves'     : board.n_moves,
+        'n_start_marbles' : board._N_MARBLES,
+        'n_cups'          : board._NCUPS,
+        'player_1_result' : player_1_result,
+        'player_2_result' : player_2_result,
     }
     return results
 
