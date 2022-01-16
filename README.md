@@ -25,10 +25,21 @@ Bucket  1 2 3 4 5 6
 
 ```
 ## Strategies
-- [ ] Random:
+- [X] Random:
 	* Player's moves are selected with equal probabilitiy from available moves
 - [ ] Max score:
 	* Player's moves are chosen by the one which maximises the increase in score from the move
 	* Requires implementation of deep copying of Board class
 - [ ] Minimax algorithm:
 	* More complicated, requires depth parameter and alpha/beta pruning (for no crazy runtimes)
+- [ ] Reinforecment learning
+
+## TODO
+- [ ] Loop over different marble and cups
+
+
+## Investigations
+- [ ] Win rate vs player
+- [ ] Win rate vs first move
+- [ ] Win rate vs n_marbles/n_buckets
+- [ ] Win rate vs n_moves
