@@ -39,7 +39,5 @@ Bucket  1 2 3 4 5 6
 
 
 ## Investigations
-- [ ] Win rate vs player
 - [ ] Win rate vs first move
 - [ ] Win rate vs n_marbles/n_buckets
-- [ ] Win rate vs n_moves
