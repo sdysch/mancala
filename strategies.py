@@ -37,7 +37,8 @@ def run_random_trials(args):
         'n_start_marbles',
         'n_cups',
         'player_1_result',
-        'player_2_result'
+        'player_2_result',
+        'first_move'
     ]
 
     result = pd.DataFrame(columns=columns)
@@ -88,6 +89,7 @@ def run_random_game(seed):
         'n_cups'          : board._NCUPS,
         'player_1_result' : player_1_result,
         'player_2_result' : player_2_result,
+        'first_move'      : board.first_move if hasattr(board, 'first_move') else None
     }
     return results
 
@@ -114,6 +116,8 @@ def make_moves(board, strategy, **kwargs):
         player         = INITIAL_PLAYER
         initial_side   = player
         initial_choice = rng.choice(board.available_moves(player))
+        # can't think of a better way to store this
+        setattr(board, 'first_move', initial_choice)
 
         # make initial move
         side, position = board.make_player_move(player, initial_choice, initial_side)
