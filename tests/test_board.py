@@ -116,5 +116,15 @@ class TestBoard(unittest.TestCase):
 
         self.assertEqual(self.b.last_bucket_empty(side, position), True)
 
+    def test_deep_copy(self):
+        from copy import deepcopy
+
+        self.b.player_one_cups = [1, 2, 3, 4, 5]
+        copied = deepcopy(self.b)
+        copied.player_one_cups = [5, 4, 3, 2, 1]
+
+        self.assertNotEqual(copied.player_one_cups, self.b.player_one_cups)
+
+
 if __name__ == '__main__':
     unittest.main()
