@@ -45,6 +45,9 @@ def run_trials(args):
     import time
     start_time = time.time()
 
+    if args.make_runtime_plots:
+        runtime = []
+
     # TODO multithreading? This is essentially O(n), so it probably won't do much
     # Maybe multi-processing?
     from progress.bar import IncrementalBar
@@ -71,9 +74,18 @@ def run_trials(args):
             df = run_game(player_one, player_two)
             result = result.append(df, ignore_index=True)
 
+            if args.make_runtime_plots:
+                runtime.append(time.time() - start_time)
             bar.next()
 
     print(f'Ran {n_games} iterations in {time.time() - start_time} seconds')
+
+    if args.make_runtime_plots:
+        import matplotlib.pyplot as plt
+        plt.plot(runtime)
+        plt.xlabel('Number of games')
+        plt.ylabel('Time [seconds]')
+        plt.savefig('plots/runtime.pdf')
 
     return result
 
@@ -183,12 +195,12 @@ if __name__ == '__main__':
             type = int,
             help = 'Number of independent mancala games to run')
 
-    parser.add_argument('--player_one_strategy',
+    parser.add_argument('--player-one-strategy',
             default = 'random', 
             type = str,
             help = 'Strategy for player one. Default: random')
 
-    parser.add_argument('--player_two_strategy',
+    parser.add_argument('--player-two-strategy',
             default = 'random', 
             type = str,
             help = 'Strategy for player two. Default: random')
@@ -197,6 +209,11 @@ if __name__ == '__main__':
             default = 'data/output.csv', 
             type = str,
             help = 'Location to save output file to')
+
+    parser.add_argument('--make-runtime-plots',
+            default = True,
+            type = bool,
+            help = 'Plot runtime vs number of games simulated')
 
     args = parser.parse_args()
 
