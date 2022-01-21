@@ -1,6 +1,6 @@
 def main(args):
 
-    from core.Board import Board
+    from core.game.Board import Board
 
     board = Board()
     board.player_one_cups = [0, 0, 0, 0, 3, 0]
