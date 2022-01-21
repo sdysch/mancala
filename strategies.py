@@ -42,32 +42,36 @@ def run_trials(args):
 
     result = pd.DataFrame(columns=columns)
 
-    print(f'Running {n_games} iterations of Mancala with player one and two strategies: "{args.player_one_strategy}" and "{args.player_two_strategy}", respectively.')
     import time
     start_time = time.time()
 
     # TODO multithreading? This is essentially O(n), so it probably won't do much
     # Maybe multi-processing?
-    for game in range(n_games):
+    from progress.bar import IncrementalBar
+    message = f'Running {n_games} iterations of Mancala with player one and two strategies: "{args.player_one_strategy}" and "{args.player_two_strategy}", respectively.'
+    with IncrementalBar(message, max=n_games) as bar:
+        for game in range(n_games):
 
-        player_one = get_player(args.player_one_strategy, 1)
-        player_two = get_player(args.player_one_strategy, 2)
+            player_one = get_player(args.player_one_strategy, 1)
+            player_two = get_player(args.player_one_strategy, 2)
 
-        if player_one is None:
-            raise ValueError('Player one is None')
+            if player_one is None:
+                raise ValueError('Player one is None')
 
-        if player_two is None:
-            raise ValueError('Player two is None')
+            if player_two is None:
+                raise ValueError('Player two is None')
 
-        # use game iteration as seed for reproducability, ensuring seed is never 0
-        seed_one = 2 * n_games + game
-        seed_two = 2 * n_games - game
+            # use game iteration as seed for reproducability, ensuring seed is never 0
+            seed_one = 2 * n_games + game
+            seed_two = 2 * n_games - game
 
-        player_one.set_seed(seed_one)
-        player_two.set_seed(seed_one)
+            player_one.set_seed(seed_one)
+            player_two.set_seed(seed_one)
 
-        df = run_game(player_one, player_two)
-        result = result.append(df, ignore_index=True)
+            df = run_game(player_one, player_two)
+            result = result.append(df, ignore_index=True)
+
+            bar.next()
 
     print(f'Ran {n_games} iterations in {time.time() - start_time} seconds')
 
