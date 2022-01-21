@@ -64,7 +64,7 @@ def run_random_trials(args):
 def run_random_game(seed):
     """ Run a single mancala game with random strategy """
 
-    from Board import Board
+    from core.Board import Board
     board = Board()
 
     board = make_moves(board, strategy='random', seed=seed)

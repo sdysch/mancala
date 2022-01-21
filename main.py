@@ -1,6 +1,6 @@
 def main(args):
 
-    from Board import Board
+    from core.Board import Board
 
     board = Board()
 
