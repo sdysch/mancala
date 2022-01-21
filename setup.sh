@@ -1,3 +1,2 @@
 #!/bin/sh
-
-export PYTHONPATH=$(pwd):$PYTHONPATH
+export PYTHONPATH='$(pwd)/core/':$PYTHONPATH
