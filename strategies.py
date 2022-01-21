@@ -14,8 +14,9 @@ def main(args):
         raise ValueError(f'One strategy is not recognised. Please choose from {STRATEGIES}')
     else:
         result = run_trials(args)
-        print(f'Saving output to {args.output}')
-        result.to_csv(args.output, index=False)
+        output = f'data/{args.output}.csv'
+        print(f'Saving output to {output}')
+        result.to_csv(output, index=False)
 
 # ====================================================================================================
 
@@ -80,12 +81,18 @@ def run_trials(args):
 
     print(f'Ran {n_games} iterations in {time.time() - start_time} seconds')
 
+    # runtime plots
     if args.make_runtime_plots:
         import matplotlib.pyplot as plt
         plt.plot(runtime)
         plt.xlabel('Number of games')
         plt.ylabel('Time [seconds]')
-        plt.savefig('plots/runtime.pdf')
+        plt.savefig(f'plots/runtime_{args.output}.pdf')
+        plt.savefig(f'plots/runtime_{args.output}.png')
+
+        # pickle list
+        import pickle
+        pickle.dump(runtime, open(f'plots/{args.output}.p', 'wb'))
 
     return result
 
@@ -206,9 +213,9 @@ if __name__ == '__main__':
             help = 'Strategy for player two. Default: random')
 
     parser.add_argument('-o', '--output',
-            default = 'data/output.csv', 
+            default = 'output', 
             type = str,
-            help = 'Location to save output file to')
+            help = 'Stamp for outputs')
 
     parser.add_argument('--make-runtime-plots',
             default = True,
