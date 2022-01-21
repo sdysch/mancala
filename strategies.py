@@ -10,18 +10,17 @@ def main(args):
 
     global STRATEGIES
 
-    if args.strategy not in STRATEGIES:
-        raise ValueError(f'Strategy {args.strategy} is not recognised')
+    if args.player_one_strategy not in STRATEGIES or args.player_two_strategy not in STRATEGIES:
+        raise ValueError(f'One strategy is not recognised. Please choose from {STRATEGIES}')
     else:
-        result = run_random_trials(args)
+        result = run_trials(args)
         print(f'Saving output to {args.output}')
         result.to_csv(args.output, index=False)
 
 # ====================================================================================================
 
-def run_random_trials(args):
-    """ Iterate through a full mancala game, args.ngames times.
-        The player's moves are selected with equal probability from the available legal moves. """
+def run_trials(args):
+    """Iterate through a full mancala game, args.ngames times"""
 
     n_games = args.ngames
 
@@ -43,16 +42,31 @@ def run_random_trials(args):
 
     result = pd.DataFrame(columns=columns)
 
-    print(f'Running {n_games} iterations of Mancala with random strategy')
+    print(f'Running {n_games} iterations of Mancala with player one and two strategies: "{args.player_one_strategy}" and "{args.player_two_strategy}", respectively.')
     import time
     start_time = time.time()
 
     # TODO multithreading? This is essentially O(n), so it probably won't do much
     # Maybe multi-processing?
     for game in range(n_games):
-        # use game iteration as seed for reproducability
-        seed = game + 1
-        df = run_random_game(seed)
+
+        player_one = get_player(args.player_one_strategy, 1)
+        player_two = get_player(args.player_one_strategy, 2)
+
+        if player_one is None:
+            raise ValueError('Player one is None')
+
+        if player_two is None:
+            raise ValueError('Player two is None')
+
+        # use game iteration as seed for reproducability, ensuring seed is never 0
+        seed_one = 2 * n_games + game
+        seed_two = 2 * n_games - game
+
+        player_one.set_seed(seed_one)
+        player_two.set_seed(seed_one)
+
+        df = run_game(player_one, player_two)
         result = result.append(df, ignore_index=True)
 
     print(f'Ran {n_games} iterations in {time.time() - start_time} seconds')
@@ -61,13 +75,28 @@ def run_random_trials(args):
 
 # ====================================================================================================
 
-def run_random_game(seed):
-    """ Run a single mancala game with random strategy """
+def get_player(strategy, player_number):
+
+    global STRATEGIES
+
+    if strategy not in STRATEGIES:
+        raise ValueError(f'Strategy {strategy} is not recognised')
+
+    if strategy == 'random':
+        from core.players.RandomPlayer import RandomPlayer
+        return RandomPlayer(player_number)
+    else:
+        return None
+
+# ====================================================================================================
+
+def run_game(player_one, player_two):
+    """ Run a single mancala game"""
 
     from core.game.Board import Board
     board = Board()
 
-    board = make_moves(board, strategy='random', seed=seed)
+    board = make_moves(board, player_one, player_two)
 
     if board.player_one_goal > board.player_two_goal:
         player_1_result = 'win'
@@ -80,63 +109,53 @@ def run_random_game(seed):
         player_2_result = 'draw'
 
     results = {
-        'player_1_score'  : board.player_one_goal,
-        'player_2_score'  : board.player_two_goal,
-        'player_1_moves'  : board.n_moves_player_one,
-        'player_2_moves'  : board.n_moves_player_two,
-        'total_moves'     : board.n_moves,
-        'n_start_marbles' : board._N_MARBLES,
-        'n_cups'          : board._NCUPS,
-        'player_1_result' : player_1_result,
-        'player_2_result' : player_2_result,
-        'first_move'      : board.first_move if hasattr(board, 'first_move') else None
+        'player_1_score'      : board.player_one_goal,
+        'player_2_score'      : board.player_two_goal,
+        'player_1_moves'      : board.n_moves_player_one,
+        'player_2_moves'      : board.n_moves_player_two,
+        'total_moves'         : board.n_moves,
+        'n_start_marbles'     : board._N_MARBLES,
+        'n_cups'              : board._NCUPS,
+        'player_1_result'     : player_1_result,
+        'player_2_result'     : player_2_result,
+        'first_move'          : board.first_move if hasattr(board, 'first_move') else None,
+        'player_one_strategy' : player_one.strategy,
+        'player_two_strategy' : player_two.strategy
     }
     return results
 
 # ====================================================================================================
 
-def make_moves(board, strategy, **kwargs):
-    """ make moves with strategy. side, position, board represent the initial choices/board layout """
+def make_moves(board, player_one, player_two):
+    """ make moves with """
 
-    global STRATEGIES, INITIAL_PLAYER
+    global INITIAL_PLAYER
 
-    if strategy not in STRATEGIES:
-        raise ValueError(f'Strategy {args.strategy} is not recognised')
+    player         = INITIAL_PLAYER
+    initial_side   = player
+    if INITIAL_PLAYER == 1:
+        initial_choice = player_one.move(board)
+    else:
+        initial_choice = player_two.move(board)
 
-    if strategy == 'random':
-        seed = kwargs.get('seed', 'DEFAULT')
+    # can't think of a better way to store this
+    setattr(board, 'first_move', initial_choice)
 
-        if seed == 'DEFAULT':
-            raise ValueError('Strategy is random and no seed specified')
-
-        from random import Random
-        rng = Random()
-        rng.seed(seed)
-
-        player         = INITIAL_PLAYER
-        initial_side   = player
-        initial_choice = rng.choice(board.available_moves(player))
-        # can't think of a better way to store this
-        setattr(board, 'first_move', initial_choice)
-
-        # make initial move
-        side, position = board.make_player_move(player, initial_choice, initial_side)
-
+    # make initial move
+    side, position = board.make_player_move(player, initial_choice, initial_side)
 
     while not board.no_more_moves():
 
         # ended in player goal - they get a new move
         if side == None and position == 0:
-            moves = board.available_moves(player)
-            move  = get_move(board, moves, strategy, rng)
+            move = player_one.move(board) if player == 1 else player_two.move(board)
             side, position = board.make_player_move(player, move, player)
 
         # if the last marble was put into an empty bucket, the players switch
         elif board.last_bucket_empty(side, position):
             player = 1 if player == 2 else 2
             side_of_board = player
-            moves = board.available_moves(player)
-            move  = get_move(board, moves, strategy, rng)
+            move = player_one.move(board) if player == 1 else player_two.move(board)
             side, position = board.make_player_move(player, move, side_of_board)
 
         # same player continues from the position the previous move terminated in
@@ -150,22 +169,6 @@ def make_moves(board, strategy, **kwargs):
 
 # ====================================================================================================
 
-def get_move(board, moves, strategy, rng):
-    """ Get move with strategy """
-
-    global STRATEGIES
-
-    if strategy not in STRATEGIES:
-        raise ValueError(f'Strategy {args.strategy} is not recognised')
-
-    move = None
-    if strategy == 'random':
-        move = rng.choice(moves)
-
-    return move
-
-# ====================================================================================================
-            
 if __name__ == '__main__':
 
     import argparse
@@ -176,10 +179,15 @@ if __name__ == '__main__':
             type = int,
             help = 'Number of independent mancala games to run')
 
-    parser.add_argument('-s', '--strategy',
+    parser.add_argument('--player_one_strategy',
             default = 'random', 
             type = str,
-            help = 'Strategy to choose moves. Default: random')
+            help = 'Strategy for player one. Default: random')
+
+    parser.add_argument('--player_two_strategy',
+            default = 'random', 
+            type = str,
+            help = 'Strategy for player two. Default: random')
 
     parser.add_argument('-o', '--output',
             default = 'data/output.csv', 
