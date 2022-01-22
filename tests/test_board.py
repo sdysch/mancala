@@ -1,10 +1,18 @@
 import unittest
 from core.game.Board import Board
+from core.players.RandomPlayer import RandomPlayer
 
 class TestBoard(unittest.TestCase):
     
     def setUp(self):
         self.b = Board()
+
+        # Use RandomPlayer for testing board
+        player_one = RandomPlayer(1)
+        player_two = RandomPlayer(2)
+
+        self.b.player_one = player_one
+        self.b.player_two = player_two
 
     def tearDown(self):
         del self.b

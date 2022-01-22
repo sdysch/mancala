@@ -102,8 +102,8 @@ def run_game(player_one, player_two):
     results = {
         'player_1_score'      : board.player_one_goal,
         'player_2_score'      : board.player_two_goal,
-        'player_1_moves'      : board.n_moves_player_one,
-        'player_2_moves'      : board.n_moves_player_two,
+        'player_1_moves'      : board.player_one.n_moves,
+        'player_2_moves'      : board.player_two.n_moves,
         'total_moves'         : board.n_moves,
         'n_start_marbles'     : board._N_MARBLES,
         'n_cups'              : board._NCUPS,
