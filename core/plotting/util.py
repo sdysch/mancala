@@ -1,4 +1,7 @@
 def make_runtime_plot(runtime, name):
+
+    print('Making runtime plot')
+
     import matplotlib.pyplot as plt
     plt.plot(runtime)
     plt.xlabel('Number of games')
