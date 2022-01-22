@@ -2,7 +2,6 @@
 STRATEGIES = [
         'random'
         ]
-INITIAL_PLAYER = 1
 
 # ====================================================================================================
 
@@ -115,7 +114,8 @@ def run_game(player_one, player_two):
     from core.game.Board import Board
     board = Board()
 
-    board = make_moves(board, player_one, player_two)
+    board.run_game(player_one, player_two)
+    board.calculate_final_board_scores()
 
     if board.player_one_goal > board.player_two_goal:
         player_1_result = 'win'
@@ -141,50 +141,8 @@ def run_game(player_one, player_two):
         'player_one_strategy' : player_one.strategy,
         'player_two_strategy' : player_two.strategy
     }
+
     return results
-
-# ====================================================================================================
-
-def make_moves(board, player_one, player_two):
-    """ make moves with """
-
-    global INITIAL_PLAYER
-
-    player         = INITIAL_PLAYER
-    initial_side   = player
-    if INITIAL_PLAYER == 1:
-        initial_choice = player_one.move(board)
-    else:
-        initial_choice = player_two.move(board)
-
-    # can't think of a better way to store this
-    setattr(board, 'first_move', initial_choice)
-
-    # make initial move
-    side, position = board.make_player_move(player, initial_choice, initial_side)
-
-    while not board.no_more_moves():
-
-        # ended in player goal - they get a new move
-        if side == None and position == 0:
-            move = player_one.move(board) if player == 1 else player_two.move(board)
-            side, position = board.make_player_move(player, move, player)
-
-        # if the last marble was put into an empty bucket, the players switch
-        elif board.last_bucket_empty(side, position):
-            player = 1 if player == 2 else 2
-            side_of_board = player
-            move = player_one.move(board) if player == 1 else player_two.move(board)
-            side, position = board.make_player_move(player, move, side_of_board)
-
-        # same player continues from the position the previous move terminated in
-        else:
-            side, position = board.make_player_move(player, position, side)
-
-    #print(board)
-    board.calculate_final_board_scores()
-
-    return board
 
 # ====================================================================================================
 
