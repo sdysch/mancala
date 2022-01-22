@@ -1,6 +1,8 @@
 class Board:
     ''' Class which holds a representation of a Mancala board '''
 
+    _INITIAL_PLAYER = 1
+
     def __init__(self, *args, **kwargs):
 
         self._N_MARBLES      = kwargs.get('n_start_marbles', 6)
@@ -267,3 +269,41 @@ class Board:
         else:
             self.player_two_goal += sum(self.player_one_cups)
             self.player_one_cups = [0 for _ in self.player_one_cups]
+
+    def run_game(self, player_one, player_two):
+        """Runs the mancala game from the current board state.
+            player_one and player_two are of the type core.players.Player, and control the move selection strategy
+        """
+
+        # Note, a player can be moving marbles on the opponents side. Store these separately
+        player       = Board._INITIAL_PLAYER
+        initial_side = Board._INITIAL_PLAYER
+
+        if Board._INITIAL_PLAYER == 1:
+            initial_choice = player_one.move(self)
+        else:
+            initial_choice = player_two.move(self)
+
+        # store initial move choice
+        self.first_move = initial_choice
+
+        # make initial move
+        side, position = self.make_player_move(Board._INITIAL_PLAYER, initial_choice, initial_side)
+
+        while not self.no_more_moves():
+
+            # ended in player goal - they get a new move
+            if side == None and position == 0:
+                move = player_one.move(self) if player == 1 else player_two.move(self)
+                side, position = self.make_player_move(player, move, player)
+
+            # if the last marble was put into an empty bucket, the players switch
+            elif self.last_bucket_empty(side, position):
+                player = 1 if player == 2 else 2
+                side_of_board = player
+                move = player_one.move(self) if player == 1 else player_two.move(self)
+                side, position = self.make_player_move(player, move, side_of_board)
+
+            # same player continues from the position the previous move terminated in
+            else:
+                side, position = self.make_player_move(player, position, side)
