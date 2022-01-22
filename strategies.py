@@ -83,12 +83,8 @@ def run_trials(args):
 
     # runtime plots
     if args.make_runtime_plots:
-        import matplotlib.pyplot as plt
-        plt.plot(runtime)
-        plt.xlabel('Number of games')
-        plt.ylabel('Time [seconds]')
-        plt.savefig(f'plots/runtime_{args.output}.pdf')
-        plt.savefig(f'plots/runtime_{args.output}.png')
+        from core.plotting.utils import make_runtime_plot
+        make_runtime_plot(runtime, args.output)
 
         # pickle list
         import pickle
