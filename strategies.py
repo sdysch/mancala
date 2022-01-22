@@ -52,7 +52,8 @@ def run_trials(args):
     # Maybe multi-processing?
     from progress.bar import IncrementalBar
     message = f'Running {n_games} iterations of Mancala with player one and two strategies: "{args.player_one_strategy}" and "{args.player_two_strategy}", respectively.'
-    with IncrementalBar(message, max=n_games) as bar:
+    print(message)
+    with IncrementalBar('Progress: ', max=n_games) as bar:
         for game in range(n_games):
 
             player_one = get_player(args.player_one_strategy, 1)
