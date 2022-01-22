@@ -17,6 +17,10 @@ class Board:
         self.n_moves_player_one = 0
         self.n_moves_player_two = 0
 
+        # Note, a player can be moving marbles on the opponents side. Store these separately
+        self.player = Board._INITIAL_PLAYER
+        self.side   = Board._INITIAL_PLAYER
+
     def __str__(self):
         '''
         format the board in a pretty string: 
@@ -275,35 +279,30 @@ class Board:
             player_one and player_two are of the type core.players.Player, and control the move selection strategy
         """
 
-        # Note, a player can be moving marbles on the opponents side. Store these separately
-        player       = Board._INITIAL_PLAYER
-        initial_side = Board._INITIAL_PLAYER
-
-        if Board._INITIAL_PLAYER == 1:
-            initial_choice = player_one.move(self)
+        if self.player == 1:
+            self.position = player_one.move(self)
         else:
-            initial_choice = player_two.move(self)
+            self.position = player_two.move(self)
 
         # store initial move choice
-        self.first_move = initial_choice
+        self.first_move = self.position
 
         # make initial move
-        side, position = self.make_player_move(Board._INITIAL_PLAYER, initial_choice, initial_side)
+        self.side, self.position = self.make_player_move(self.player, self.position, self.side)
 
         while not self.no_more_moves():
 
             # ended in player goal - they get a new move
-            if side == None and position == 0:
-                move = player_one.move(self) if player == 1 else player_two.move(self)
-                side, position = self.make_player_move(player, move, player)
+            if self.side == None and self.position == 0:
+                move = player_one.move(self) if self.player == 1 else player_two.move(self)
+                self.side, self.position = self.make_player_move(self.player, move, self.player)
 
             # if the last marble was put into an empty bucket, the players switch
-            elif self.last_bucket_empty(side, position):
-                player = 1 if player == 2 else 2
-                side_of_board = player
-                move = player_one.move(self) if player == 1 else player_two.move(self)
-                side, position = self.make_player_move(player, move, side_of_board)
+            elif self.last_bucket_empty(self.side, self.position):
+                self.player = 1 if self.player == 2 else 2
+                move = player_one.move(self) if self.player == 1 else player_two.move(self)
+                self.side, self.position = self.make_player_move(self.player, move, self.player)
 
             # same player continues from the position the previous move terminated in
             else:
-                side, position = self.make_player_move(player, position, side)
+                self.side, self.position = self.make_player_move(self.player, self.position, self.side)
