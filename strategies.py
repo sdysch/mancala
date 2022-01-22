@@ -1,30 +1,22 @@
-# global variables
-STRATEGIES = [
-        'random'
-        ]
-
-# ====================================================================================================
-
 def main(args):
 
-    global STRATEGIES
-
-    if args.player_one_strategy not in STRATEGIES or args.player_two_strategy not in STRATEGIES:
-        raise ValueError(f'One strategy is not recognised. Please choose from {STRATEGIES}')
-    else:
-        result = run_trials(args)
-        output = f'data/{args.output}.csv'
-        print(f'Saving output to {output}')
-        result.to_csv(output, index=False)
+    result = run_trials(args)
+    output = f'data/{args.output}.csv'
+    print(f'Saving output to {output}')
+    result.to_csv(output, index=False)
 
 # ====================================================================================================
 
 def run_trials(args):
     """Iterate through a full mancala game, args.ngames times"""
 
-    n_games = args.ngames
-
     import pandas as pd 
+    import time
+
+    from core.players.util import get_player
+    from progress.bar import IncrementalBar
+
+    n_games = args.ngames
 
     # data structure to store results
     columns = [
@@ -42,15 +34,12 @@ def run_trials(args):
 
     result = pd.DataFrame(columns=columns)
 
-    import time
     start_time = time.time()
 
     if args.make_runtime_plots:
         runtime = []
 
-    # TODO multithreading? This is essentially O(n), so it probably won't do much
-    # Maybe multi-processing?
-    from progress.bar import IncrementalBar
+    # TODO multithreading? This is essentially O(n), so it probably won't do much. Maybe multi-processing?
     message = f'Running {n_games} iterations of Mancala with player one and two strategies: "{args.player_one_strategy}" and "{args.player_two_strategy}", respectively.'
     print(message)
     with IncrementalBar('Progress: ', max=n_games) as bar:
@@ -58,12 +47,6 @@ def run_trials(args):
 
             player_one = get_player(args.player_one_strategy, 1)
             player_two = get_player(args.player_one_strategy, 2)
-
-            if player_one is None:
-                raise ValueError('Player one is None')
-
-            if player_two is None:
-                raise ValueError('Player two is None')
 
             # use game iteration as seed for reproducability, ensuring seed is never 0
             seed_one = 2 * n_games + game
@@ -91,21 +74,6 @@ def run_trials(args):
         pickle.dump(runtime, open(f'plots/{args.output}.p', 'wb'))
 
     return result
-
-# ====================================================================================================
-
-def get_player(strategy, player_number):
-
-    global STRATEGIES
-
-    if strategy not in STRATEGIES:
-        raise ValueError(f'Strategy {strategy} is not recognised')
-
-    if strategy == 'random':
-        from core.players.RandomPlayer import RandomPlayer
-        return RandomPlayer(player_number)
-    else:
-        return None
 
 # ====================================================================================================
 
