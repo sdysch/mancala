@@ -18,10 +18,6 @@ class Board:
         self.player_one = None
         self.player_two = None
 
-        # NOTE, a player can be moving marbles on the opponent's side. Store these separately
-        self.player = Board._INITIAL_PLAYER
-        self.side   = Board._INITIAL_PLAYER
-
     def __str__(self):
         '''
         format the board in a pretty string: 
@@ -287,7 +283,11 @@ class Board:
         if self.player_two == None:
             raise ValueError('Board does not have a valid player two set. Please set a player')
 
-        if self.player == 1:
+        # NOTE, a player can be moving marbles on the opponent's side. Store these separately
+        self.player = Board._INITIAL_PLAYER
+        self.side   = Board._INITIAL_PLAYER
+
+        if Board._INITIAL_PLAYER == 1:
             self.position = self.player_one.move(self)
         else:
             self.position = self.player_two.move(self)
