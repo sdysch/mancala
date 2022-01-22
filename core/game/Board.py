@@ -14,13 +14,8 @@ class Board:
         self.player_one_goal = 0
         self.player_two_goal = 0
 
-        # FIXME these should be stored in player objects
         self.n_moves_player_one = 0
         self.n_moves_player_two = 0
-
-        # instances of core.players.Player
-        self.player_one = None
-        self.player_two = None
 
     def __str__(self):
         '''
@@ -141,8 +136,7 @@ class Board:
             self.player_two_goal += value
 
     def make_player_move(self, player_number, bucket, side_of_board):
-        """ This function simulates player_number choosing bucket on side_of_board,
-            and distributing them across the board. """
+        ''' Iterate through board until valid moves are left. Returns the side of the board, and position of next move'''
 
         self.check_valid_player(player_number)
         self.check_valid_bucket(bucket)
@@ -276,49 +270,40 @@ class Board:
             self.player_two_goal += sum(self.player_one_cups)
             self.player_one_cups = [0 for _ in self.player_one_cups]
 
-    def run_game(self):
-        """Runs the mancala game from the current board state until the game is over.
+    def run_game(self, player_one, player_two):
+        """Runs the mancala game from the current board state.
             player_one and player_two are of the type core.players.Player, and control the move selection strategy
         """
 
-        if self.player_one == None:
-            raise ValueError('Board does not have a valid player one set. Please set a player')
-
-        if self.player_two == None:
-            raise ValueError('Board does not have a valid player two set. Please set a player')
-
-        # NOTE, a player can be moving marbles on the opponent's side. Store these separately
-        self.player = Board._INITIAL_PLAYER
-        self.side   = Board._INITIAL_PLAYER
+        # Note, a player can be moving marbles on the opponents side. Store these separately
+        player       = Board._INITIAL_PLAYER
+        initial_side = Board._INITIAL_PLAYER
 
         if Board._INITIAL_PLAYER == 1:
-            self.position = self.player_one.move(self)
+            initial_choice = player_one.move(self)
         else:
-            self.position = self.player_two.move(self)
+            initial_choice = player_two.move(self)
 
         # store initial move choice
-        self.first_move = self.position
+        self.first_move = initial_choice
 
         # make initial move
-        self.side, self.position = self.make_player_move(Board._INITIAL_PLAYER, self.position, self.side)
+        side, position = self.make_player_move(Board._INITIAL_PLAYER, initial_choice, initial_side)
 
         while not self.no_more_moves():
-            self.make_player_turn()
 
-    def make_player_turn(self):
-        """ Makes one iteration of a player's turn """
+            # ended in player goal - they get a new move
+            if side == None and position == 0:
+                move = player_one.move(self) if player == 1 else player_two.move(self)
+                side, position = self.make_player_move(player, move, player)
 
-        # ended in player goal - they get a new move
-        if self.side == None and self.position == 0:
-            move = self.player_one.move(self) if self.player == 1 else self.player_two.move(self)
-            self.side, self.position = self.make_player_move(self.player, move, self.player)
+            # if the last marble was put into an empty bucket, the players switch
+            elif self.last_bucket_empty(side, position):
+                player = 1 if player == 2 else 2
+                side_of_board = player
+                move = player_one.move(self) if player == 1 else player_two.move(self)
+                side, position = self.make_player_move(player, move, side_of_board)
 
-        # if the last marble was put into an empty bucket, the players switch
-        elif self.last_bucket_empty(self.side, self.position):
-            self.player = 1 if self.player == 2 else 2
-            move = self.player_one.move(self) if self.player == 1 else self.player_two.move(self)
-            self.side, self.position = self.make_player_move(self.player, move, self.player)
-
-        # same player continues from the position the previous move terminated in
-        else:
-            self.side, self.position = self.make_player_move(self.player, self.position, self.side)
+            # same player continues from the position the previous move terminated in
+            else:
+                side, position = self.make_player_move(player, position, side)
