@@ -38,6 +38,7 @@ Bucket  1 2 3 4 5 6
 	* Check out keras-rl and gym environment
 
 ## TODO
+- [ ] Move mancala "rules" into Board class
 - [ ] Loop over different marble and cups
 
 
