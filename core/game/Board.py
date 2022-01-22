@@ -14,6 +14,10 @@ class Board:
         self.player_one_goal = 0
         self.player_two_goal = 0
 
+        # FIXME these should be stored in player objects
+        self.n_moves_player_one = 0
+        self.n_moves_player_two = 0
+
         # instances of core.players.Player
         self.player_one = None
         self.player_two = None
@@ -60,7 +64,7 @@ class Board:
 
     @property
     def n_moves(self):
-        return self.player_one.n_moves + self.player_two.n_moves
+        return self.n_moves_player_one + self.n_moves_player_two
 
     def check_valid_player(self, player_number):
         ''' Check if player number is valid '''
@@ -158,10 +162,10 @@ class Board:
 
         # passed all validity checks - this is a valid move, so increment counters
         if player_number == 1:
-            self.player_one.n_moves += 1
+            self.n_moves_player_one += 1
 
         elif player_number == 2:
-            self.player_two.n_moves += 1
+            self.n_moves_player_two += 1
 
         # starting position
         position = bucket + 1

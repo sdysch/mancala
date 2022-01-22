@@ -3,8 +3,6 @@ from abc import ABC, abstractmethod
 class Player(ABC):
     """Abstract class to simulate Mancala player behaviour with a defined strategy"""
 
-    n_moves = 0
-
     @abstractmethod
     def move(self, board=None):
         """Return a move choice for board"""
