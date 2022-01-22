@@ -83,7 +83,10 @@ def run_game(player_one, player_two):
     from core.game.Board import Board
     board = Board()
 
-    board.run_game(player_one, player_two)
+    board.player_one = player_one
+    board.player_two = player_two
+
+    board.run_game()
     board.calculate_final_board_scores()
 
     if board.player_one_goal > board.player_two_goal:
