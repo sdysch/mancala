@@ -8,7 +8,6 @@ def run_trials(args):
     import pandas as pd 
     import time
 
-    from core.players.util import get_player
     from progress.bar import IncrementalBar
 
     n_games = args.ngames
@@ -112,5 +111,15 @@ def run_game(player_one, player_two):
     }
 
     return results
+
+# ====================================================================================================
+
+def get_player(strategy, player_number):
+
+    if strategy == 'random':
+        from core.players.RandomPlayer import RandomPlayer
+        return RandomPlayer(player_number)
+    else:
+        raise ValueError(f'Strategy {strategy} is not recognised')
 
 # ====================================================================================================
