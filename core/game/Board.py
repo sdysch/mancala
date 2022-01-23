@@ -53,10 +53,13 @@ class Board:
         return board_string
 
     def __eq__(self, other):
+        """ Returns True if self and other have the same board layout, and False if not """
         if self.player_one_goal == other.player_one_goal \
         and self.player_two_goal == other.player_two_goal \
         and self.player_one_cups == other.player_one_cups \
-        and self.player_two_cups == other.player_two_cups:
+        and self.player_two_cups == other.player_two_cups \
+        and self.side == other.side \
+        and self.player == other.player:
             return True
         else:
             return False
@@ -140,7 +143,7 @@ class Board:
             self.player_two_goal += value
 
     def make_player_move(self, player_number, bucket, side_of_board):
-        ''' Iterate through board until valid moves are left. Returns the side of the board, and position of next move'''
+        """ Make a single move for player_number, starting from bucket number bucket on side_of_board """
 
         self.check_valid_player(player_number)
         self.check_valid_bucket(bucket)
@@ -276,7 +279,8 @@ class Board:
             self.player_one_cups = [0 for _ in self.player_one_cups]
 
     def run_full_game(self, player_one, player_two):
-        """Runs the mancala game from the current board state.
+        """
+            Runs the mancala game from the current board state.
             player_one and player_two are of the type core.players.Player, and control the move selection strategy
         """
 
@@ -295,7 +299,7 @@ class Board:
             self.make_player_turn(player_one, player_two)
 
     def make_player_turn(self, player_one, player_two):
-        """ Run a complete turn for a player - i.e. iterate through the board until player switches """
+        """ Run a complete turn for a player - i.e. iterate through the board until player number switches """
 
         # ended in player goal - they get a new move
         if self.side == None and self.position == 0:
