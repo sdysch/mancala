@@ -30,6 +30,7 @@ Bucket  1 2 3 4 5 6
 - [ ] Max score:
 	* Player's moves are chosen by the one which maximises the increase in score from the move
 	* Requires implementation of deep copying of Board class
+	* How to make choice for "Mancala move"?
 - [ ] Max moves:
 	* Make move which maximises the number of moves a player will make
 - [ ] Minimax algorithm:
@@ -39,7 +40,6 @@ Bucket  1 2 3 4 5 6
 
 ## TODO
 - [X] Move mancala "rules" into Board class
-- [ ] Tests for Board.run_full_game() and Board.make_player_turn()
 - [ ] Loop over different marble and cups
 
 
