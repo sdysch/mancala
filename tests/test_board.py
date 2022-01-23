@@ -20,7 +20,10 @@ class TestBoard(unittest.TestCase):
         result.player_one_cups = [0, 0, 0, 0, 0, 0]
         result.player_two_cups = [1, 1, 1, 1, 1, 0]
 
-        self.assertEqual(self.b, result)
+        self.assertEqual(self.b.player_one_cups, result.player_one_cups) \
+        and self.assertEqual(self.b.player_two_cups, result.player_two_cups) \
+        and self.assertEqual(self.b.player_one_goal, result.player_one_goal) \
+        and self.assertEqual(self.b.player_two_goal, result.player_two_goal)
 
     def test_player_two_moves(self):
         self.b.player_one_cups = [1, 1, 1, 1, 1, 1]
