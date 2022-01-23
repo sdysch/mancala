@@ -39,7 +39,7 @@ Bucket  1 2 3 4 5 6
 
 ## TODO
 - [X] Move mancala "rules" into Board class
-- [ ] Tests for Board.run_game()
+- [ ] Tests for Board.run_full_game() and Board.make_player_turn()
 - [ ] Loop over different marble and cups
 
 

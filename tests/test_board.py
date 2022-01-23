@@ -65,13 +65,15 @@ class TestBoard(unittest.TestCase):
 
     def test_end_in_goal_1(self):
         self.b.player_one_cups = [0, 0, 0, 3, 0, 0]
+        self.b.make_player_move(1, 4, 1)
 
-        self.assertEqual(self.b.make_player_move(1, 4, 1), (None, 0))
+        self.assertEqual((self.b.side, self.b.position), (None, 0))
 
     def test_end_in_goal_2(self):
         self.b.player_two_cups = [0, 0, 0, 3, 0, 0]
+        self.b.make_player_move(2, 4, 2)
 
-        self.assertEqual(self.b.make_player_move(2, 4, 2), (None, 0))
+        self.assertEqual((self.b.side, self.b.position), (None, 0))
 
     def test_available_moves_1(self):
 
@@ -90,14 +92,16 @@ class TestBoard(unittest.TestCase):
 
         self.b.player_one_cups = [0, 0, 0, 0, 3, 0]
         self.b.player_two_cups = [0, 0, 0, 0, 4, 0]
-        side, position = self.b.make_player_move(1, 5, 1)
+        self.b.make_player_move(1, 5, 1)
+        side, position = self.b.side, self.b.position
 
         self.assertEqual(self.b.last_bucket_empty(side, position), True)
 
     def test_last_bucket_empty_3(self):
 
         self.b.player_one_cups = [0, 3, 0, 0, 0, 0]
-        side, position = self.b.make_player_move(1, 2, 1)
+        self.b.make_player_move(1, 2, 1)
+        side, position = self.b.side, self.b.position
 
         self.assertEqual(self.b.last_bucket_empty(side, position), True)
 
@@ -105,14 +109,16 @@ class TestBoard(unittest.TestCase):
 
         self.b.player_one_cups = [0, 0, 0, 0, 5, 0]
         self.b.player_two_cups = [0, 6, 0, 0, 0, 3]
-        side, position = self.b.make_player_move(2, 6, 2)
+        self.b.make_player_move(2, 6, 2)
+        side, position = self.b.side, self.b.position
 
         self.assertEqual(self.b.last_bucket_empty(side, position), True)
 
     def test_last_bucket_empty_5(self):
 
         self.b.player_two_cups = [0, 3, 0, 0, 0, 3]
-        side, position = self.b.make_player_move(2, 2, 2)
+        self.b.make_player_move(2, 2, 2)
+        side, position = self.b.side, self.b.position
 
         self.assertEqual(self.b.last_bucket_empty(side, position), True)
 
@@ -125,7 +131,7 @@ class TestBoard(unittest.TestCase):
 
         self.assertNotEqual(copied.player_one_cups, self.b.player_one_cups)
 
-    # TODO tests for board.run_game()
+    # TODO tests for board.make_player_turn() & board.run_full_game()
 
 
 if __name__ == '__main__':

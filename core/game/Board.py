@@ -17,6 +17,10 @@ class Board:
         self.n_moves_player_one = 0
         self.n_moves_player_two = 0
 
+        # Note, a player can be moving marbles on the opponents side. Store these separately
+        self.player = Board._INITIAL_PLAYER
+        self.side   = Board._INITIAL_PLAYER
+
     def __str__(self):
         '''
         format the board in a pretty string: 
@@ -210,7 +214,8 @@ class Board:
         else:
             position -= 1
 
-        return updating_cups, position
+        self.side     = updating_cups
+        self.position = position
 
     def no_more_moves(self):
         ''' returns True if there are no more moves (one side of the board is empty) else False '''
@@ -270,40 +275,39 @@ class Board:
             self.player_two_goal += sum(self.player_one_cups)
             self.player_one_cups = [0 for _ in self.player_one_cups]
 
-    def run_game(self, player_one, player_two):
+    def run_full_game(self, player_one, player_two):
         """Runs the mancala game from the current board state.
             player_one and player_two are of the type core.players.Player, and control the move selection strategy
         """
 
-        # Note, a player can be moving marbles on the opponents side. Store these separately
-        player       = Board._INITIAL_PLAYER
-        initial_side = Board._INITIAL_PLAYER
-
-        if Board._INITIAL_PLAYER == 1:
-            initial_choice = player_one.move(self)
+        if self.player == 1:
+            self.position = player_one.move(self)
         else:
-            initial_choice = player_two.move(self)
+            self.position = player_two.move(self)
 
         # store initial move choice
-        self.first_move = initial_choice
+        self.first_move = self.position
 
         # make initial move
-        side, position = self.make_player_move(Board._INITIAL_PLAYER, initial_choice, initial_side)
+        self.make_player_move(self.player, self.position, self.side)
 
         while not self.no_more_moves():
+            self.make_player_turn(player_one, player_two)
 
-            # ended in player goal - they get a new move
-            if side == None and position == 0:
-                move = player_one.move(self) if player == 1 else player_two.move(self)
-                side, position = self.make_player_move(player, move, player)
+    def make_player_turn(self, player_one, player_two):
+        """ Run a complete turn for a player - i.e. iterate through the board until player switches """
 
-            # if the last marble was put into an empty bucket, the players switch
-            elif self.last_bucket_empty(side, position):
-                player = 1 if player == 2 else 2
-                side_of_board = player
-                move = player_one.move(self) if player == 1 else player_two.move(self)
-                side, position = self.make_player_move(player, move, side_of_board)
+        # ended in player goal - they get a new move
+        if self.side == None and self.position == 0:
+            move = player_one.move(self) if self.player == 1 else player_two.move(self)
+            self.make_player_move(self.player, move, self.player)
 
-            # same player continues from the position the previous move terminated in
-            else:
-                side, position = self.make_player_move(player, position, side)
+        # if the last marble was put into an empty bucket, the players switch
+        elif self.last_bucket_empty(self.side, self.position):
+            self.player = 1 if self.player == 2 else 2
+            move = player_one.move(self) if self.player == 1 else player_two.move(self)
+            self.make_player_move(self.player, move, self.player)
+
+        # same player continues from the position the previous move terminated in
+        else:
+            self.make_player_move(self.player, self.position, self.side)
