@@ -125,7 +125,7 @@ class TestBoard(unittest.TestCase):
 
         self.assertNotEqual(copied.player_one_cups, self.b.player_one_cups)
 
-    # TODO tests for board.run_game()
+    # TODO tests for board.make_player_turn() & board.run_full_game()
 
 
 if __name__ == '__main__':
