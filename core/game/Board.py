@@ -291,18 +291,22 @@ class Board:
         self.side, self.position = self.make_player_move(self.player, self.position, self.side)
 
         while not self.no_more_moves():
+            self.make_player_turn(player_one, player_two)
 
-            # ended in player goal - they get a new move
-            if self.side == None and self.position == 0:
-                move = player_one.move(self) if self.player == 1 else player_two.move(self)
-                self.side, self.position = self.make_player_move(self.player, move, self.player)
+    def make_player_turn(self, player_one, player_two):
+        """ Run a complete turn for a player - i.e. iterate through the board until player switches """
 
-            # if the last marble was put into an empty bucket, the players switch
-            elif self.last_bucket_empty(self.side, self.position):
-                self.player = 1 if self.player == 2 else 2
-                move = player_one.move(self) if self.player == 1 else player_two.move(self)
-                self.side, self.position = self.make_player_move(self.player, move, self.player)
+        # ended in player goal - they get a new move
+        if self.side == None and self.position == 0:
+            move = player_one.move(self) if self.player == 1 else player_two.move(self)
+            self.side, self.position = self.make_player_move(self.player, move, self.player)
 
-            # same player continues from the position the previous move terminated in
-            else:
-                self.side, self.position = self.make_player_move(self.player, self.position, self.side)
+        # if the last marble was put into an empty bucket, the players switch
+        elif self.last_bucket_empty(self.side, self.position):
+            self.player = 1 if self.player == 2 else 2
+            move = player_one.move(self) if self.player == 1 else player_two.move(self)
+            self.side, self.position = self.make_player_move(self.player, move, self.player)
+
+        # same player continues from the position the previous move terminated in
+        else:
+            self.side, self.position = self.make_player_move(self.player, self.position, self.side)
