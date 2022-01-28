@@ -129,7 +129,7 @@ class Board:
         ''' get the goal for opponent_number '''
 
         self.check_valid_player(player_number)
-        opponent_goal = self.player_one_goal if player_number == 1 else self.player_two_goal
+        opponent_goal = self.player_one_goal if player_number == 2 else self.player_two_goal
 
         return opponent_goal
 
