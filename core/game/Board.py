@@ -21,6 +21,8 @@ class Board:
         self.player = Board._INITIAL_PLAYER
         self.side   = Board._INITIAL_PLAYER
 
+        self.position = None
+
     def __str__(self):
         '''
         format the board in a pretty string: 
@@ -72,7 +74,7 @@ class Board:
         ''' Check if player number is valid '''
 
         if player_number not in [1, 2]:
-            raise ValueError('Player number must be either 1 or 2')
+            raise ValueError(f'Player number must be either 1 or 2. Value {player_number} is invalid')
 
     def check_valid_side(self, side):
         ''' Check if side number is valid '''
@@ -299,7 +301,10 @@ class Board:
             self.make_player_turn(player_one, player_two)
 
     def make_player_turn(self, player_one, player_two):
-        """ Run a complete turn for a player - i.e. iterate through the board until player number switches """
+        """ Wrapper around make_player_move to run a move choice for a player,
+            implementing the mancala rules """
+
+            # TODO add tests for this in tests/test_board.py
 
         # ended in player goal - they get a new move
         if self.side == None and self.position == 0:
@@ -309,6 +314,7 @@ class Board:
         # if the last marble was put into an empty bucket, the players switch
         elif self.last_bucket_empty(self.side, self.position):
             self.player = 1 if self.player == 2 else 2
+            self.side = self.player
             move = player_one.move(self) if self.player == 1 else player_two.move(self)
             self.make_player_move(self.player, move, self.player)
 
