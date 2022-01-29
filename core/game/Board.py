@@ -149,6 +149,7 @@ class Board:
 
         self.check_valid_player(player_number)
         self.check_valid_bucket(bucket)
+        self.check_valid_side(side_of_board)
 
         # get the number of marbles from the chosen position, reset this bucket
         if side_of_board == 1:
