@@ -53,21 +53,38 @@ class MaxScorePlayer(Player):
 
         return choice
 
-    def get_move_score(self, move, board):
+    def get_move_score(self, move, board, first_move=True):
+
         from copy import deepcopy
         board_copy = deepcopy(board)
         board_copy.position = move
         board_copy.side     = self.player
-        first_move = True
+
+        is_first_move = first_move
 
         while True:
-            # ended in player goal
+
+            # check if there are possible moves to make
+            if board_copy.no_more_moves():
+                board_copy.calculate_final_board_scores()
+                return self.score(board_copy)
+
+            # examine mancala rules
+
+            # if previous move ended in player goal, player gets a new choice
+            # we recursively find the best move choice
             if board_copy.side == None and board_copy.position == 0:
+                for move in board_copy.available_moves(self.player):
+                    return self.get_move_score(move, board_copy, first_move=False)
+
+            # if previous move ended in empty bucket, players switch
+            # we are done with this move tree
+            elif not is_first_move and board_copy.last_bucket_empty(board_copy.side, board_copy.position):
                 break
-            if not first_move:
-                # ended in empty bucket, players switch
-                if board_copy.last_bucket_empty(board_copy.side, board_copy.position):
-                    break
-            board_copy.make_player_move(board_copy.player, board_copy.position, board_copy.side)
-            first_move = False
+
+            # if none of the previous rules appls, we must have ended on a non-empty bucket
+            # carry on iterating
+            else:
+                board_copy.make_player_move(board_copy.player, board_copy.position, board_copy.side)
+            is_first_move = False
         return self.score(board_copy)
