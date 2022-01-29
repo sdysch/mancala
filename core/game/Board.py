@@ -281,7 +281,7 @@ class Board:
             self.player_two_goal += sum(self.player_one_cups)
             self.player_one_cups = [0 for _ in self.player_one_cups]
 
-    def run_full_game(self, player_one, player_two):
+    def run_full_game(self, player_one, player_two, verbose=False):
         """
             Runs the mancala game from the current board state.
             player_one and player_two are of the type core.players.Player, and control the move selection strategy
@@ -299,6 +299,8 @@ class Board:
         self.make_player_move(self.player, self.position, self.side)
 
         while not self.no_more_moves():
+            if verbose:
+                print(self)
             self.make_player_turn(player_one, player_two)
 
     def make_player_turn(self, player_one, player_two):
