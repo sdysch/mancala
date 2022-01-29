@@ -52,7 +52,7 @@ def run_trials(args):
 
             if hasattr(player_two, 'set_seed'):
                 seed_two = 2 * n_games - game
-                player_two.set_seed(seed_one)
+                player_two.set_seed(seed_two)
 
             # run this game according to the defined rules and the player strategies for move choice
             df = run_game(player_one, player_two)

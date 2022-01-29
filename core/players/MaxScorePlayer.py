@@ -18,6 +18,9 @@ class MaxScorePlayer(Player):
         self.seed = seed
         self.rng.seed(seed)
 
+    def move_score(self, board):
+        return board.get_player_goal(self.player)
+
     def move(self, board):
         """Choose the move from board to maximise the player's score.
             If there are multiple possible moves, then the choice is random"""
@@ -27,54 +30,40 @@ class MaxScorePlayer(Player):
         if board.player != self.player:
             raise ValueError(f'board player is {board.player} and MaxScorePlayer is {self.player}. Please check your logic')
 
-        print(f'Board: \n{board}')
+        #print(f'Board: \n{board}')
         moves = board.available_moves(self.player)
 
-        player = 1 if self.player == 1 else 2
-        initial_score = board.get_player_goal(player)
+        initial_score = board.get_player_goal(self.player)
         score_move_holder = {}
 
-        # Examine all moves. A player ending in their goal is counted as the end of their move
-        print(f'Available moves for player {self.player}: {moves}')
+        # Examine all moves
+        #print(f'Available moves for player {self.player}: {moves}')
         for move in moves:
             board_copy = deepcopy(board)
-            print(f'Trying move {move} for player {board_copy.player} on side {board_copy.side}')
-            print(board_copy)
-            bucket     = move
-            player     = board_copy.player
-            side       = board_copy.side
-            position   = board_copy.position
+            board_copy.position = move
+            board_copy.side     = self.player
             first_move = True
+            #print(f'Trying move {move} for player {board_copy.player} on side {board_copy.side}')
             while True:
-                print(board_copy)
-                print(side, position)
-                # ended in player goal
-                if side == None and position == 0:
-                    if not first_move:
-                        print('Ended in player goal')
-                        print(board_copy)
+                #print(board_copy)
+                if not first_move:
+                    # ended in player goal
+                    if board_copy.side == None and board_copy.position == 0:
+                        #print('Ended in player goal')
+                        #print(board_copy)
                         break
-                    side = player
-                    board_copy.make_player_move(player, bucket, side)
+                    # ended in empty bucket, players switch
+                    elif board_copy.last_bucket_empty(board_copy.side, board_copy.position):
+                        #print('Ended in empty bucket')
+                        #print(board_copy)
+                        break
+                board_copy.make_player_move(board_copy.player, board_copy.position, board_copy.side)
+                first_move = False
+            score_move_holder[move] = self.move_score(board_copy) - initial_score
 
-                # last marble was put into an empty bucket
-                elif not first_move and board_copy.last_bucket_empty(side, position):
-                    print('Last marble went into empty bucket')
-                    print(board_copy)
-                    break
-
-                # same player continues from the position the previous move terminated in
-                else:
-                    print(f'Now the player is {player}')
-                    board_copy.make_player_move(player, bucket, side)
-                    bucket = board_copy.position
-                    side   = board_copy.side
-                    first_move = False
-            score_move_holder[move] = board_copy.get_player_goal(player) - initial_score
-
-        print(score_move_holder)
         max_score = max(score_move_holder.values())
-        print(max_score)
+        #print(score_move_holder)
+        #print(max_score)
 
         # find max score, and corresponding move
         choices = []
@@ -87,5 +76,5 @@ class MaxScorePlayer(Player):
         else:
             choice = self.rng.choice(choices)
 
-        print(choice)
+        #print(f'Move choice: {choice}')
         return choice
