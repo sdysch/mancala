@@ -24,6 +24,9 @@ class MaxScorePlayer(Player):
 
         from copy import deepcopy
 
+        if board.player != self.player:
+            raise ValueError(f'board player is {board.player} and MaxScorePlayer is {self.player}. Please check your logic')
+
         print(f'Board: \n{board}')
         moves = board.available_moves(self.player)
 
@@ -37,31 +40,36 @@ class MaxScorePlayer(Player):
             board_copy = deepcopy(board)
             print(f'Trying move {move} for player {board_copy.player} on side {board_copy.side}')
             print(board_copy)
-            bucket = move
-            player = board_copy.player
-            side   = board_copy.side
+            bucket     = move
+            player     = board_copy.player
+            side       = board_copy.side
+            position   = board_copy.position
             first_move = True
             while True:
+                print(board_copy)
+                print(side, position)
                 # ended in player goal
-                if board_copy.side == None and board_copy.position == 0:
-                    print('Ended in player goal')
-                    print(board_copy)
-                    break
-                if not first_move:
-                    # last marble put into an empty bucket
-                    if board_copy.last_bucket_empty(board_copy.side, board_copy.position):
-                        print('Last marble went into empty bucket')
+                if side == None and position == 0:
+                    if not first_move:
+                        print('Ended in player goal')
                         print(board_copy)
                         break
+                    side = player
+                    board_copy.make_player_move(player, bucket, side)
 
-                board_copy.make_player_move(board_copy.player, bucket, side)
-                bucket = board_copy.position
-                side   = board_copy.side
-                first_move = False
-                print(f'Bucket is now {bucket}')
-                print(f'Player is now {player}')
-                print(f'side is now {side}')
+                # last marble was put into an empty bucket
+                elif not first_move and board_copy.last_bucket_empty(side, position):
+                    print('Last marble went into empty bucket')
+                    print(board_copy)
+                    break
 
+                # same player continues from the position the previous move terminated in
+                else:
+                    print(f'Now the player is {player}')
+                    board_copy.make_player_move(player, bucket, side)
+                    bucket = board_copy.position
+                    side   = board_copy.side
+                    first_move = False
             score_move_holder[move] = board_copy.get_player_goal(player) - initial_score
 
         print(score_move_holder)
@@ -75,6 +83,9 @@ class MaxScorePlayer(Player):
                 choices.append(move)
 
         if len(choices) == 1:
-            return choices[0]
-        
-        return self.rng.choice(choices)
+            choice = choices[0]
+        else:
+            choice = self.rng.choice(choices)
+
+        print(choice)
+        return choice
