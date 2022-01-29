@@ -86,7 +86,7 @@ class Board:
         ''' Check if chosen bucket is valid '''
 
         if not (bucket >= 1 and bucket <= self._NCUPS):
-            raise ValueError('Invalid bucket number')
+            raise ValueError(f'Invalid bucket number "{bucket}"')
 
     def get_player_cups(self, player_number):
         ''' get the cups for player_number '''
