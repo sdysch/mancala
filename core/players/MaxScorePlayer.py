@@ -75,7 +75,7 @@ class MaxScorePlayer(Player):
             # we recursively find the best move choice
             if board_copy.side == None and board_copy.position == 0:
                 for move in board_copy.available_moves(self.player):
-                    return self.get_move_score(move, board_copy, first_move=False)
+                    return self.score(board_copy) + self.get_move_score(move, board_copy, first_move=False)
 
             # if previous move ended in empty bucket, players switch
             # we are done with this move tree.
