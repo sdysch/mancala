@@ -27,7 +27,8 @@ Bucket  1 2 3 4 5 6
 ## Strategies
 - [X] Random:
 	* Player's moves are selected with equal probabilitiy from available moves
-- [ ] Max score:
+- [ ] Exact move strategy
+- [X] Max score:
 	* Player's moves are chosen by the one which maximises the increase in score from the move
 	* Requires implementation of deep copying of Board class
 	* How to make choice for "Mancala move"?
@@ -40,7 +41,11 @@ Bucket  1 2 3 4 5 6
 
 ## TODO
 - [X] Move mancala "rules" into Board class
+- [ ] New rule implementation
+- [ ] Max moves agent
+- [ ] max goal (random fall back)
 - [ ] Loop over different marble and cups
+- [ ] Minimax
 
 
 ## Investigations
