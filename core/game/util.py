@@ -124,6 +124,9 @@ def get_player(strategy, player_number):
     elif strategy == 'max_score':
         from core.players.MaxScorePlayer import MaxScorePlayer
         return MaxScorePlayer(player_number)
+    elif strategy == 'human':
+        from core.players.HumanPlayer import HumanPlayer
+        return HumanPlayer(player_number)
     else:
         raise ValueError(f'Strategy {strategy} is not recognised')
 
