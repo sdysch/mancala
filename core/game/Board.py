@@ -21,6 +21,8 @@ class Board:
         self.player = Board._INITIAL_PLAYER
         self.side   = Board._INITIAL_PLAYER
 
+        self.position = None
+
     def __str__(self):
         '''
         format the board in a pretty string: 
@@ -72,7 +74,7 @@ class Board:
         ''' Check if player number is valid '''
 
         if player_number not in [1, 2]:
-            raise ValueError('Player number must be either 1 or 2')
+            raise ValueError(f'Player number must be either 1 or 2. Value {player_number} is invalid')
 
     def check_valid_side(self, side):
         ''' Check if side number is valid '''
@@ -84,7 +86,7 @@ class Board:
         ''' Check if chosen bucket is valid '''
 
         if not (bucket >= 1 and bucket <= self._NCUPS):
-            raise ValueError('Invalid bucket number')
+            raise ValueError(f'Invalid bucket number "{bucket}"')
 
     def get_player_cups(self, player_number):
         ''' get the cups for player_number '''
@@ -129,7 +131,7 @@ class Board:
         ''' get the goal for opponent_number '''
 
         self.check_valid_player(player_number)
-        opponent_goal = self.player_one_goal if player_number == 1 else self.player_two_goal
+        opponent_goal = self.player_one_goal if player_number == 2 else self.player_two_goal
 
         return opponent_goal
 
@@ -147,6 +149,7 @@ class Board:
 
         self.check_valid_player(player_number)
         self.check_valid_bucket(bucket)
+        self.check_valid_side(side_of_board)
 
         # get the number of marbles from the chosen position, reset this bucket
         if side_of_board == 1:
@@ -278,7 +281,7 @@ class Board:
             self.player_two_goal += sum(self.player_one_cups)
             self.player_one_cups = [0 for _ in self.player_one_cups]
 
-    def run_full_game(self, player_one, player_two):
+    def run_full_game(self, player_one, player_two, verbose=False):
         """
             Runs the mancala game from the current board state.
             player_one and player_two are of the type core.players.Player, and control the move selection strategy
@@ -296,10 +299,15 @@ class Board:
         self.make_player_move(self.player, self.position, self.side)
 
         while not self.no_more_moves():
+            if verbose:
+                print(self)
             self.make_player_turn(player_one, player_two)
 
     def make_player_turn(self, player_one, player_two):
-        """ Run a complete turn for a player - i.e. iterate through the board until player number switches """
+        """ Wrapper around make_player_move to run a move choice for a player,
+            implementing the mancala rules """
+
+            # TODO add tests for this in tests/test_board.py
 
         # ended in player goal - they get a new move
         if self.side == None and self.position == 0:
@@ -309,6 +317,7 @@ class Board:
         # if the last marble was put into an empty bucket, the players switch
         elif self.last_bucket_empty(self.side, self.position):
             self.player = 1 if self.player == 2 else 2
+            self.side = self.player
             move = player_one.move(self) if self.player == 1 else player_two.move(self)
             self.make_player_move(self.player, move, self.player)
 

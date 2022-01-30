@@ -43,14 +43,16 @@ def run_trials(args):
         for game in range(n_games):
 
             player_one = get_player(args.player_one_strategy, 1)
-            player_two = get_player(args.player_one_strategy, 2)
+            player_two = get_player(args.player_two_strategy, 2)
 
             # use game iteration as seed for reproducability, ensuring seed is never 0
-            seed_one = 2 * n_games + game
-            seed_two = 2 * n_games - game
+            if hasattr(player_one, 'set_seed'):
+                seed_one = 2 * n_games + game
+                player_one.set_seed(seed_one)
 
-            player_one.set_seed(seed_one)
-            player_two.set_seed(seed_one)
+            if hasattr(player_two, 'set_seed'):
+                seed_two = 2 * n_games - game
+                player_two.set_seed(seed_two)
 
             # run this game according to the defined rules and the player strategies for move choice
             df = run_game(player_one, player_two)
@@ -119,6 +121,9 @@ def get_player(strategy, player_number):
     if strategy == 'random':
         from core.players.RandomPlayer import RandomPlayer
         return RandomPlayer(player_number)
+    elif strategy == 'max_score':
+        from core.players.MaxScorePlayer import MaxScorePlayer
+        return MaxScorePlayer(player_number)
     else:
         raise ValueError(f'Strategy {strategy} is not recognised')
 
