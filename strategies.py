@@ -20,6 +20,11 @@ if __name__ == '__main__':
             type = int,
             help = 'Number of independent mancala games to run')
 
+    parser.add_argument('--n-marbles',
+            required = False,
+            type = int,
+            help = 'Number of initial marbles in buckets')
+
     parser.add_argument('--player-one-strategy',
             default = 'random', 
             type = str,

@@ -81,11 +81,10 @@ class MaxScorePlayer(Player):
             # we are done with this move tree.
             # This has to be manually skipped for a player's first move
             elif not is_first_move and board_copy.last_bucket_empty(board_copy.side, board_copy.position):
-                break
+                return self.score(board_copy)
 
             # if none of the previous rules apply, we must have ended on a non-empty bucket
             # carry on iterating
             else:
                 board_copy.make_player_move(board_copy.player, board_copy.position, board_copy.side)
             is_first_move = False
-        return self.score(board_copy)

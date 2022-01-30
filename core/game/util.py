@@ -30,6 +30,9 @@ def run_trials(args):
 
     result = pd.DataFrame(columns=columns)
 
+    if args.n_marbles is not None and args.n_marbles > 0:
+        print(f'Setting initial number of marbles to {args.n_marbles}')
+
     start_time = time.time()
 
     if args.make_runtime_plots:
@@ -55,7 +58,7 @@ def run_trials(args):
                 player_two.set_seed(seed_two)
 
             # run this game according to the defined rules and the player strategies for move choice
-            df = run_game(player_one, player_two)
+            df = run_game(player_one, player_two, args)
             result = result.append(df, ignore_index=True)
 
             if args.make_runtime_plots:
@@ -78,11 +81,14 @@ def run_trials(args):
 
 # ====================================================================================================
 
-def run_game(player_one, player_two):
+def run_game(player_one, player_two, args):
     """ Run a single mancala game"""
 
     from core.game.Board import Board
-    board = Board()
+    if args.n_marbles is not None and args.n_marbles > 0:
+        board = Board(n_start_marbles=args.n_marbles)
+    else:
+        board = Board()
 
     board.run_full_game(player_one, player_two)
     board.calculate_final_board_scores()
