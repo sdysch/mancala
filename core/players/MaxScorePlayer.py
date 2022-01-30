@@ -80,7 +80,7 @@ class MaxScorePlayer(Player):
             # if previous move ended in empty bucket, players switch
             # we are done with this move tree.
             # This has to be manually skipped for a player's first move
-            elif not is_first_move and board_copy.last_bucket_empty(board_copy.side, board_copy.position):
+            elif not is_first_move and board_copy.last_bucket_empty():
                 return self.score(board_copy)
 
             # if none of the previous rules apply, we must have ended on a non-empty bucket

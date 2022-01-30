@@ -144,15 +144,37 @@ class Board:
         else:
             self.player_two_goal += value
 
-    def make_player_move(self, player_number, bucket, side_of_board):
+    def make_player_turn(self, player_one, player_two):
+        """ Wrapper around make_player_move to run a move choice for a player,
+            implementing the mancala rules """
+
+        # TODO add tests for this in tests/test_board.py
+
+        # ended in player goal - they get a new move
+        if self.side == None and self.position == 0:
+            move = player_one.move(self) if self.player == 1 else player_two.move(self)
+            self.make_player_move(self.player, move, self.player)
+
+        # if the last marble was put into an empty bucket, the players switch
+        elif self.last_bucket_empty():
+            self.player = 1 if self.player == 2 else 2
+            self.side = self.player
+            move = player_one.move(self) if self.player == 1 else player_two.move(self)
+            self.make_player_move(self.player, move, self.player)
+
+        # same player continues from the position the previous move terminated in
+        else:
+            self.make_player_move(self.player, self.position, self.side)
+
+    def make_player_move(self, player_number, bucket, side):
         """ Make a single move for player_number, starting from bucket number bucket on side_of_board """
 
         self.check_valid_player(player_number)
         self.check_valid_bucket(bucket)
-        self.check_valid_side(side_of_board)
+        self.check_valid_side(side)
 
         # get the number of marbles from the chosen position, reset this bucket
-        if side_of_board == 1:
+        if side == 1:
             marbles = self.player_one_cups[bucket - 1]
             self.player_one_cups[bucket - 1] = 0
 
@@ -172,10 +194,10 @@ class Board:
             self.n_moves_player_two += 1
 
         # starting position
-        position = bucket + 1
+        self.position = bucket + 1
 
         # whose cups we are updating
-        updating_cups = side_of_board
+        self.side = side
 
         # flag to keep track if we ended in a player's goal
         ended_in_goal = False
@@ -183,45 +205,42 @@ class Board:
         # distribute the marbles across the board
         for _ in range(marbles):
             # we have reached the edge of the board
-            if position == self._NCUPS + 1:
+            if self.position == self._NCUPS + 1:
 
                 # if we have been iterating over the player's cups, update their goal
                 # else, update the _initial_ cup of the other player
-                if updating_cups == player_number:
+                if self.side == player_number:
                     ended_in_goal = True
-                    position = 1
+                    self.position = 1
                     self.update_player_goal(player_number, 1)
 
                 else:
-                    position = 2
-                    self.update_opponent_cups(updating_cups, 1, 1)
+                    self.position = 2
+                    self.update_opponent_cups(self.side, 1, 1)
 
-                # switch whose goal we are updating
-                updating_cups = 1 if updating_cups == 2 else 2
+                # switch side
+                self.side = 1 if self.side == 2 else 2
 
             # not yet reached the end of the board
             else:
-                self.update_player_cups(updating_cups, position, 1)
+                self.update_player_cups(self.side, self.position, 1)
                 ended_in_goal = False
-                position += 1
+                self.position += 1
 
 
         # store the side of the board we ended on (1 or 2), and the bucket we ended on
         # if we ended in the player's goal (ended_in_goal==True), store position of 0, updating_cups None
         if ended_in_goal:
-            position = 0
-            updating_cups = None
+            self.position = 0
+            self.side = None
 
         # need to subtract 1 from position, as we have incremented the position once too many inside the for loop
-        elif position == 1:
-            updating_cups = 1 if updating_cups == 2 else 2
-            position = self._NCUPS
+        elif self.position == 1:
+            self.side = 1 if self.side == 2 else 2
+            self.position = self._NCUPS
 
         else:
-            position -= 1
-
-        self.side     = updating_cups
-        self.position = position
+            self.position -= 1
 
     def no_more_moves(self):
         ''' returns True if there are no more moves (one side of the board is empty) else False '''
@@ -241,18 +260,16 @@ class Board:
                 buckets_with_marbles.append(i+1)
         return buckets_with_marbles
 
-    def last_bucket_empty(self, side, position):
-        ''' returns True if the bucket at position-1 was empty before this move finished '''
+    def last_bucket_empty(self):
+        ''' returns True if the bucket at position-1 was empty before this move finished.
+            I.e., the last move played ended in an empty goal'''
 
-        self.check_valid_bucket(position)
-        self.check_valid_side(side)
-
-        if position == 0:
+        if self.position == 0:
             raise ValueError('Position == 0 means that the previous move ended in a player goal. Please check your logic')
 
         # ended in position 1 - we need to check buckets on previous side
-        elif position == 1:
-            new_side = 1 if side == 2 else 2
+        elif self.position == 1:
+            new_side = 1 if self.side == 2 else 2
             cups = self.get_player_cups(new_side)
             if cups[self._NCUPS - 1] == 1:
                 return True
@@ -260,8 +277,8 @@ class Board:
                 return False
 
         else:
-            buckets = self.get_player_cups(side)
-            if buckets[position - 1] == 1:
+            buckets = self.get_player_cups(self.side)
+            if buckets[self.position - 1] == 1:
                 return True
             else:
                 return False
@@ -302,25 +319,3 @@ class Board:
             if verbose:
                 print(self)
             self.make_player_turn(player_one, player_two)
-
-    def make_player_turn(self, player_one, player_two):
-        """ Wrapper around make_player_move to run a move choice for a player,
-            implementing the mancala rules """
-
-            # TODO add tests for this in tests/test_board.py
-
-        # ended in player goal - they get a new move
-        if self.side == None and self.position == 0:
-            move = player_one.move(self) if self.player == 1 else player_two.move(self)
-            self.make_player_move(self.player, move, self.player)
-
-        # if the last marble was put into an empty bucket, the players switch
-        elif self.last_bucket_empty(self.side, self.position):
-            self.player = 1 if self.player == 2 else 2
-            self.side = self.player
-            move = player_one.move(self) if self.player == 1 else player_two.move(self)
-            self.make_player_move(self.player, move, self.player)
-
-        # same player continues from the position the previous move terminated in
-        else:
-            self.make_player_move(self.player, self.position, self.side)

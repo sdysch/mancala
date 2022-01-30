@@ -89,41 +89,38 @@ class TestBoard(unittest.TestCase):
 
     def test_last_bucket_empty_1(self):
 
-        self.assertRaises(ValueError, self.b.last_bucket_empty, 0, 1)
+        self.b.position = 0
+        self.assertRaises(ValueError, self.b.last_bucket_empty)
 
     def test_last_bucket_empty_2(self):
 
         self.b.player_one_cups = [0, 0, 0, 0, 3, 0]
         self.b.player_two_cups = [0, 0, 0, 0, 4, 0]
         self.b.make_player_move(1, 5, 1)
-        side, position = self.b.side, self.b.position
 
-        self.assertEqual(self.b.last_bucket_empty(side, position), True)
+        self.assertEqual(self.b.last_bucket_empty(), True)
 
     def test_last_bucket_empty_3(self):
 
         self.b.player_one_cups = [0, 3, 0, 0, 0, 0]
         self.b.make_player_move(1, 2, 1)
-        side, position = self.b.side, self.b.position
 
-        self.assertEqual(self.b.last_bucket_empty(side, position), True)
+        self.assertEqual(self.b.last_bucket_empty(), True)
 
     def test_last_bucket_empty_4(self):
 
         self.b.player_one_cups = [0, 0, 0, 0, 5, 0]
         self.b.player_two_cups = [0, 6, 0, 0, 0, 3]
         self.b.make_player_move(2, 6, 2)
-        side, position = self.b.side, self.b.position
 
-        self.assertEqual(self.b.last_bucket_empty(side, position), True)
+        self.assertEqual(self.b.last_bucket_empty(), True)
 
     def test_last_bucket_empty_5(self):
 
         self.b.player_two_cups = [0, 3, 0, 0, 0, 3]
         self.b.make_player_move(2, 2, 2)
-        side, position = self.b.side, self.b.position
 
-        self.assertEqual(self.b.last_bucket_empty(side, position), True)
+        self.assertEqual(self.b.last_bucket_empty(), True)
 
     def test_deep_copy(self):
         from copy import deepcopy
