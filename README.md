@@ -45,6 +45,7 @@ Bucket  1 2 3 4 5 6
 - [ ] Max moves agent
 - [ ] max goal (random fall back)
 - [ ] Loop over different marble and cups
+- [ ] Completely rewrite make_player_turn - it is buggy (player switching is just plain wrong)
 - [ ] Minimax
 
 
