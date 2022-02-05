@@ -136,12 +136,19 @@ def get_player(strategy, player_number):
     if strategy == 'random':
         from core.players.RandomPlayer import RandomPlayer
         return RandomPlayer(player_number)
+
     elif strategy == 'max_score':
         from core.players.MaxScorePlayer import MaxScorePlayer
         return MaxScorePlayer(player_number)
+
     elif strategy == 'human':
         from core.players.HumanPlayer import HumanPlayer
         return HumanPlayer(player_number)
+
+    elif strategy == 'exact_random':
+        from core.players.ExactRandomPlayer import ExactRandomPlayer
+        return ExactRandomPlayer(player_number)
+
     else:
         raise ValueError(f'Strategy {strategy} is not recognised')
 

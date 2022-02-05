@@ -24,7 +24,6 @@ class TestMaxScorePlayer(unittest.TestCase):
         board = Board()
         board.player_two_cups = [1, 1, 1, 1, 1, 1]
         board.player_one_cups = [0, 1, 0, 4, 0, 0]
-        print(player.move(board))
 
         self.assertEqual(player.move(board), 4)
 
