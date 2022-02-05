@@ -50,5 +50,5 @@ Bucket  1 2 3 4 5 6
 
 
 ## Investigations
-- [ ] Win rate vs first move
+- [ ] Win rate vs first move for different agents (2D plot)
 - [ ] Win rate vs n_marbles/n_buckets

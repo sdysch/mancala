@@ -24,6 +24,8 @@ class Board:
 
         self.position = None
 
+        self.half_marbles_rule = False
+
     def __str__(self):
         '''
         format the board in a pretty string: 
@@ -70,6 +72,10 @@ class Board:
     @property
     def n_moves(self):
         return self.n_moves_player_one + self.n_moves_player_two
+    
+    @property
+    def sum_player_goals(self):
+        return self.player_one_goal + self.player_two_goal
 
     def check_valid_player(self, player_number):
         ''' Check if player number is valid '''
@@ -152,13 +158,12 @@ class Board:
             print(f'There are still valid moves on the board:\n{self}')
             return
         
-        # add the remaining marbles to the goal of the player who emptied their side
-        if any(self.player_two_cups):
-            self.player_one_goal += sum(self.player_two_cups)
-            self.player_two_cups = [0 for _ in self.player_two_cups]
-        else:
-            self.player_two_goal += sum(self.player_one_cups)
-            self.player_one_cups = [0 for _ in self.player_one_cups]
+        # add the remaining marbles to each player's goal
+        self.player_one_goal += sum(self.player_one_cups)
+        self.player_one_cups = [0 for _ in self.player_one_cups]
+
+        self.player_two_goal += sum(self.player_two_cups)
+        self.player_two_cups = [0 for _ in self.player_two_cups]
 
     def run_full_game(self, player_one, player_two, verbose=False):
         """
@@ -167,13 +172,12 @@ class Board:
         """
 
         if self.player == 1:
-            self.position = player_one.move(self)
             player = player_one
         else:
-            self.position = player_two.move(self)
             player = player_two
 
         # store initial move choice
+        self.position = self.first_move
         self.first_move = self.position
         self.iterate_until_turn_over(player, self.position, verbose)
 
@@ -191,7 +195,7 @@ class Board:
         # make initial move
         self.make_player_move(self.player, initial_move, self.side)
 
-        turn_over = False
+        turn_over = True if self.no_more_moves() else False
         while not turn_over:
             if verbose:
                 print(self)
@@ -292,8 +296,17 @@ class Board:
             self.position -= 1
 
     def no_more_moves(self):
-        ''' returns True if there are no more moves (one side of the board is empty) else False '''
-        return ( not any(self.player_one_cups) or not any(self.player_two_cups) )
+        """ returns True if there are no more moves:
+            * one side of the board is empty
+            * more than half the marbles have been captured
+        If not, returns False """
+
+        if not any(self.player_one_cups) or not any(self.player_two_cups):
+            return True
+        if self.half_marbles_rule:
+            if self.sum_player_goals >= 0.5 * self._N_MARBLES * self._NCUPS:
+                return True
+        return False
     
     def available_moves(self, player):
         ''' returns a list of valid moves for this player '''
