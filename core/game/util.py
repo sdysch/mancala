@@ -153,6 +153,10 @@ def get_player(strategy, player_number):
         from core.players.ExactMaxScorePlayer import ExactMaxScorePlayer
         return ExactMaxScorePlayer(player_number)
 
+    elif strategy == 'max_marbles':
+        from core.players.MaxMarblesPlayer import MaxMarblesPlayer
+        return MaxMarblesPlayer(player_number)
+
     else:
         raise ValueError(f'Strategy {strategy} is not recognised')
 
