@@ -21,6 +21,23 @@ class MaxScorePlayer(Player):
     def score(self, board):
         return board.get_player_goal(self.player)
 
+    def get_move_with_max_score(self, score_move_holder):
+        """ Find maximum score from dict[moves] = scores, return move corresponding to it """
+        max_score = max(score_move_holder.values())
+
+        # find max score, and corresponding move
+        choices = []
+        for move, score in score_move_holder.items():
+            if score == max_score:
+                choices.append(move)
+
+        if len(choices) == 1:
+            choice = choices[0]
+        else:
+            choice = self.rng.choice(choices)
+    
+        return choice
+
     def move(self, board):
         """Choose the move from board to maximise the player's score.
             If there are multiple possible moves, then the choice is random"""
@@ -38,20 +55,7 @@ class MaxScorePlayer(Player):
             score = self.get_move_score(move, board)
             score_move_holder[move] = score
 
-        max_score = max(score_move_holder.values())
-
-        # find max score, and corresponding move
-        choices = []
-        for move, score in score_move_holder.items():
-            if score == max_score:
-                choices.append(move)
-
-        if len(choices) == 1:
-            choice = choices[0]
-        else:
-            choice = self.rng.choice(choices)
-
-        return choice
+        return self.get_move_with_max_score(score_move_holder)
 
     def get_move_score(self, move, board, first_move=True):
 
@@ -59,8 +63,6 @@ class MaxScorePlayer(Player):
         board_copy = deepcopy(board)
         board_copy.position = move
         board_copy.side     = self.player
-
-        is_first_move = first_move
 
         while True:
 
@@ -74,17 +76,19 @@ class MaxScorePlayer(Player):
             # if previous move ended in player goal, player gets a new choice
             # we recursively find the best move choice
             if board_copy.side == None and board_copy.position == 0:
+                moves_scores = {}
                 for move in board_copy.available_moves(self.player):
-                    return self.score(board_copy) + self.get_move_score(move, board_copy, first_move=False)
+                    moves_scores[move] = self.get_move_score(move, board_copy)
+                choice = self.get_move_with_max_score(moves_scores)
+                return self.score(board_copy) + moves_scores[choice]
 
-            # if previous move ended in empty bucket, players switch
+            # if previous move ended in empty bucket, capture rule and players switch
             # we are done with this move tree.
-            # This has to be manually skipped for a player's first move
-            elif not is_first_move and board_copy.last_bucket_empty():
-                return self.score(board_copy)
+            elif board_copy.last_bucket_empty():
+                new_marbles = board_copy.get_opponent_cups(self.player)[board_copy.position - 1]
+                return self.score(board_copy) + new_marbles
 
             # if none of the previous rules apply, we must have ended on a non-empty bucket
             # carry on iterating
             else:
                 board_copy.make_player_move(board_copy.player, board_copy.position, board_copy.side)
-            is_first_move = False

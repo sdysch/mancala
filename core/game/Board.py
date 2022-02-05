@@ -14,6 +14,7 @@ class Board:
         self.player_one_goal = 0
         self.player_two_goal = 0
 
+        # counter to keep track of how many moves (choices) a player makes
         self.n_moves_player_one = 0
         self.n_moves_player_two = 0
 
@@ -22,6 +23,8 @@ class Board:
         self.side   = Board._INITIAL_PLAYER
 
         self.position = None
+
+        self.half_marbles_rule = False
 
     def __str__(self):
         '''
@@ -69,6 +72,10 @@ class Board:
     @property
     def n_moves(self):
         return self.n_moves_player_one + self.n_moves_player_two
+    
+    @property
+    def sum_player_goals(self):
+        return self.player_one_goal + self.player_two_goal
 
     def check_valid_player(self, player_number):
         ''' Check if player number is valid '''
@@ -144,27 +151,73 @@ class Board:
         else:
             self.player_two_goal += value
 
-    def make_player_turn(self, player_one, player_two):
-        """ Wrapper around make_player_move to run a move choice for a player,
-            implementing the mancala rules """
+    def calculate_final_board_scores(self):
+        ''' calculates the final player scores '''
+
+        if not self.no_more_moves():
+            print(f'There are still valid moves on the board:\n{self}')
+            return
+        
+        # add the remaining marbles to each player's goal
+        self.player_one_goal += sum(self.player_one_cups)
+        self.player_one_cups = [0 for _ in self.player_one_cups]
+
+        self.player_two_goal += sum(self.player_two_cups)
+        self.player_two_cups = [0 for _ in self.player_two_cups]
+
+    def run_full_game(self, player_one, player_two, verbose=False):
+        """
+            Runs the mancala game from the current board state.
+            player_one and player_two are of the type core.players.Player, and control the move selection strategy
+        """
+
+        if self.player == 1:
+            player = player_one
+        else:
+            player = player_two
+
+        # store initial move choice
+        self.position = self.first_move
+        self.first_move = self.position
+        self.iterate_until_turn_over(player, self.position, verbose)
+
+        while not self.no_more_moves():
+            player = player_one if self.player == 1 else player_two
+            move = player.move(self)
+            self.iterate_until_turn_over(player, move, verbose)
+
+    def iterate_until_turn_over(self, player, initial_move, verbose=False):
+        """ Iterate board, implementing mancala rules, until the players switch.
+            I.e. until the players switch """
 
         # TODO add tests for this in tests/test_board.py
 
-        # ended in player goal - they get a new move
-        if self.side == None and self.position == 0:
-            move = player_one.move(self) if self.player == 1 else player_two.move(self)
-            self.make_player_move(self.player, move, self.player)
+        # make initial move
+        self.make_player_move(self.player, initial_move, self.side)
 
-        # if the last marble was put into an empty bucket, the players switch
-        elif self.last_bucket_empty():
-            self.player = 1 if self.player == 2 else 2
-            self.side = self.player
-            move = player_one.move(self) if self.player == 1 else player_two.move(self)
-            self.make_player_move(self.player, move, self.player)
+        turn_over = True if self.no_more_moves() else False
+        while not turn_over:
+            if verbose:
+                print(self)
 
-        # same player continues from the position the previous move terminated in
-        else:
-            self.make_player_move(self.player, self.position, self.side)
+            # ended in player goal - they get a new move
+            if self.side == None and self.position == 0:
+                if self.no_more_moves():
+                    turn_over = True
+                else:
+                    move = player.move(self)
+                    self.make_player_move(self.player, move, self.player)
+
+            # didn't end in player goal, check if player's turn is over and continue iterating if not
+            else:
+                if self.last_bucket_empty():
+                    turn_over = True
+                else:
+                    self.make_player_move(self.player, self.position, self.side)
+        # swap players
+        self.player = 1 if self.player == 2 else 2
+        self.side = self.player
+        return
 
     def make_player_move(self, player_number, bucket, side):
         """ Make a single move for player_number, starting from bucket number bucket on side_of_board """
@@ -243,8 +296,17 @@ class Board:
             self.position -= 1
 
     def no_more_moves(self):
-        ''' returns True if there are no more moves (one side of the board is empty) else False '''
-        return ( not any(self.player_one_cups) or not any(self.player_two_cups) )
+        """ returns True if there are no more moves:
+            * one side of the board is empty
+            * more than half the marbles have been captured
+        If not, returns False """
+
+        if not any(self.player_one_cups) or not any(self.player_two_cups):
+            return True
+        if self.half_marbles_rule:
+            if self.sum_player_goals >= 0.5 * self._N_MARBLES * self._NCUPS:
+                return True
+        return False
     
     def available_moves(self, player):
         ''' returns a list of valid moves for this player '''
@@ -283,39 +345,3 @@ class Board:
             else:
                 return False
 
-    def calculate_final_board_scores(self):
-        ''' calculates the final player scores '''
-
-        if not self.no_more_moves():
-            print(f'There are still valid moves on the board:\n{self}')
-            return
-        
-        # add the remaining marbles to the goal of the player who emptied their side
-        if any(self.player_two_cups):
-            self.player_one_goal += sum(self.player_two_cups)
-            self.player_two_cups = [0 for _ in self.player_two_cups]
-        else:
-            self.player_two_goal += sum(self.player_one_cups)
-            self.player_one_cups = [0 for _ in self.player_one_cups]
-
-    def run_full_game(self, player_one, player_two, verbose=False):
-        """
-            Runs the mancala game from the current board state.
-            player_one and player_two are of the type core.players.Player, and control the move selection strategy
-        """
-
-        if self.player == 1:
-            self.position = player_one.move(self)
-        else:
-            self.position = player_two.move(self)
-
-        # store initial move choice
-        self.first_move = self.position
-
-        # make initial move
-        self.make_player_move(self.player, self.position, self.side)
-
-        while not self.no_more_moves():
-            if verbose:
-                print(self)
-            self.make_player_turn(player_one, player_two)

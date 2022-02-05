@@ -58,7 +58,7 @@ def run_trials(args):
                 player_two.set_seed(seed_two)
 
             # run this game according to the defined rules and the player strategies for move choice
-            df = run_game(player_one, player_two, args)
+            df = run_game(player_one, player_two, game+1, args)
             result = result.append(df, ignore_index=True)
 
             if args.make_runtime_plots:
@@ -81,7 +81,7 @@ def run_trials(args):
 
 # ====================================================================================================
 
-def run_game(player_one, player_two, args):
+def run_game(player_one, player_two, game_number, args):
     """ Run a single mancala game"""
 
     from core.game.Board import Board
@@ -90,7 +90,16 @@ def run_game(player_one, player_two, args):
     else:
         board = Board()
 
-    board.run_full_game(player_one, player_two)
+    # first move is _always_ random, to inject stochastic nature for deterministic agents
+    from random import Random
+    rng = Random()
+    if game_number == 0:
+        print('[WARNING] - game_number is 0, reproducability will be lost!')
+    rng.seed(game_number)
+    board.first_move = rng.choice(range(1, board._NCUPS + 1))
+
+
+    board.run_full_game(player_one, player_two, verbose=args.verbose)
     board.calculate_final_board_scores()
 
     if board.player_one_goal > board.player_two_goal:
