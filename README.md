@@ -27,7 +27,7 @@ Bucket  1 2 3 4 5 6
 ## Strategies
 - [X] Random:
 	* Player's moves are selected with equal probabilitiy from available moves
-- [ ] Exact move strategy
+- [X] Exact move strategy
 - [X] Max score:
 	* Player's moves are chosen by the one which maximises the increase in score from the move
 	* Requires implementation of deep copying of Board class
@@ -41,11 +41,11 @@ Bucket  1 2 3 4 5 6
 
 ## TODO
 - [X] Move mancala "rules" into Board class
-- [ ] New rule implementation
-- [ ] Max moves agent
-- [ ] max goal (random fall back)
+- [X] New rule implementation
+- [X] Max moves agent
+- [X] max goal (random fall back)
+- [X] Completely rewrite make_player_turn - it is buggy (player switching is just plain wrong)
 - [ ] Loop over different marble and cups
-- [ ] Completely rewrite make_player_turn - it is buggy (player switching is just plain wrong)
 - [ ] Minimax
 
 
