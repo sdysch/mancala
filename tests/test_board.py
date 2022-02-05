@@ -122,6 +122,20 @@ class TestBoard(unittest.TestCase):
 
         self.assertEqual(self.b.last_bucket_empty(), True)
 
+    def test_iterate(self):
+
+        self.b.player_two_cups = [0, 2, 3, 0, 0, 3]
+        self.b.player_one_cups = [4, 4, 4, 4, 4, 3]
+
+        self.b.iterate_until_turn_over(1, 6)
+
+        result = Board()
+        result.player_one_cups = [4, 4, 4, 4, 4, 0]
+        result.player_two_cups = [3, 1, 1, 4, 0, 1]
+
+        self.assertEqual(self.b.player_one_cups, result.player_one_cups) \
+        and self.assertEqual(self.b.player_two_cups, result.player_two_cups)
+
     def test_deep_copy(self):
         from copy import deepcopy
 
