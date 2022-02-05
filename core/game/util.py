@@ -200,11 +200,13 @@ def run_trials_of_different_agents(player_one_strategies, player_two_strategies,
     strats_run = 0
     for player_one_strat in player_one_strategies:
         for player_two_strat in player_two_strategies:
+            strat_time = time.time()
 
             strats_run += 1
 
             # Start the loop over n_games simulations
-            message = f'Running {n_games} iterations of Mancala with player one and two strategies: "{player_one_strat}" and "{player_two_strat}", respectively. {strats_run}/{n_strats} done.'
+            message = f'Running {n_games} iterations of Mancala with player one and two strategies: "{player_one_strat}"'
+            message += f' and "{player_two_strat}", respectively. {strats_run}/{n_strats} done in {time.time() - start_time} seconds'
             print(message)
             with IncrementalBar('Progress: ', max=n_games) as bar:
                 for game in range(n_games):
@@ -227,6 +229,6 @@ def run_trials_of_different_agents(player_one_strategies, player_two_strategies,
 
                     bar.next()
 
-                print(f'\nRan {n_games} iterations in {time.time() - start_time} seconds')
+                print(f'\nRan {n_games} iterations in {time.time() - strat_time} seconds')
     print(f'\nRan all strategy simulations in {time.time() - start_time} seconds')
     return result
