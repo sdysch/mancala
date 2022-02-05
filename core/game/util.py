@@ -161,3 +161,72 @@ def get_player(strategy, player_number):
         raise ValueError(f'Strategy {strategy} is not recognised')
 
 # ====================================================================================================
+
+def run_trials_of_different_agents(player_one_strategies, player_two_strategies, args):
+    """Iterate through a full mancala game, args.ngames times, for each strategy combination in player_*_strategies"""
+
+    import pandas as pd 
+    import time
+
+    from progress.bar import IncrementalBar
+
+    n_games = args.ngames
+
+    # data structure to store results
+    columns = [
+        'player_1_score',
+        'player_2_score',
+        'player_1_moves',
+        'player_2_moves',
+        'total_moves',
+        'n_start_marbles',
+        'n_cups',
+        'player_1_result',
+        'player_2_result',
+        'first_move',
+        'player_one_strategy',
+        'player_two_strategy',
+    ]
+
+    result = pd.DataFrame(columns=columns)
+
+    if args.n_marbles is not None and args.n_marbles > 0:
+        print(f'Setting initial number of marbles to {args.n_marbles}')
+
+    n_strats = len(player_one_strategies) * len(player_two_strategies)
+    print(f'Starting {n_strats} strategy simulations of {n_games} games...')
+    start_time = time.time()
+
+    strats_run = 0
+    for player_one_strat in player_one_strategies:
+        for player_two_strat in player_two_strategies:
+
+            strats_run += 1
+
+            # Start the loop over n_games simulations
+            message = f'Running {n_games} iterations of Mancala with player one and two strategies: "{player_one_strat}" and "{player_two_strat}", respectively. {strats_run}/{n_strats} done.'
+            print(message)
+            with IncrementalBar('Progress: ', max=n_games) as bar:
+                for game in range(n_games):
+
+                    player_one = get_player(player_one_strat, 1)
+                    player_two = get_player(player_two_strat, 2)
+
+                    # use game iteration as seed for reproducability, ensuring seed is never 0
+                    if hasattr(player_one, 'set_seed'):
+                        seed_one = 2 * n_games + game
+                        player_one.set_seed(seed_one)
+
+                    if hasattr(player_two, 'set_seed'):
+                        seed_two = 2 * n_games - game
+                        player_two.set_seed(seed_two)
+
+                    # run this game according to the defined rules and the player strategies for move choice
+                    df = run_game(player_one, player_two, game+1, args)
+                    result = result.append(df, ignore_index=True)
+
+                    bar.next()
+
+                print(f'\nRan {n_games} iterations in {time.time() - start_time} seconds')
+    print(f'\nRan all strategy simulations in {time.time() - start_time} seconds')
+    return result
