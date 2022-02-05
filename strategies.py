@@ -50,6 +50,10 @@ if __name__ == '__main__':
             type = bool,
             help = 'Pickle list of runtime vs n_games')
 
+    parser.add_argument('-v', '--verbose',
+            action = 'store_true',
+            help = 'Verbose output')
+
     args = parser.parse_args()
 
     main(args)
