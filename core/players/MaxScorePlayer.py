@@ -59,6 +59,8 @@ class MaxScorePlayer(Player):
 
     def get_move_score(self, move, board, first_move=True):
 
+        # FIXME - Don't repeat yourself! Re-use Board.iterate_until_over!
+
         from copy import deepcopy
         board_copy = deepcopy(board)
         board_copy.position = move

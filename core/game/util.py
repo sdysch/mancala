@@ -149,6 +149,10 @@ def get_player(strategy, player_number):
         from core.players.ExactRandomPlayer import ExactRandomPlayer
         return ExactRandomPlayer(player_number)
 
+    elif strategy == 'exact_max_score':
+        from core.players.ExactMaxScorePlayer import ExactMaxScorePlayer
+        return ExactMaxScorePlayer(player_number)
+
     else:
         raise ValueError(f'Strategy {strategy} is not recognised')
 
