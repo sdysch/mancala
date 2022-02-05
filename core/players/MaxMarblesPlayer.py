@@ -22,9 +22,10 @@ class MaxMarblesPlayer(Player):
         self.rng.seed(seed)
 
     def move(self, board):
+        cups = board.get_player_cups(self.player)
         moves = board.available_moves(self.player)
-        max_marbles = max(board.player_one_cups)
-        choices = [v for v in moves if board.player_one_cups[v - 1] == max_marbles]
+        max_marbles = max(cups)
+        choices = [v for v in moves if cups[v - 1] == max_marbles]
         move = self.rng.choice(choices)
 
         return move
