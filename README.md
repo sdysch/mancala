@@ -3,6 +3,9 @@ Exploring different strategies for [mancala](https://en.wikipedia.org/wiki/Manca
 
 * Player 1 is the player to move first
 
+## Player 1 win probabilities
+[![Player 1 win probability](plots/player_1_win_probs.png)](plots/player_1_win_probs.png)
+
 ## Bucket numbering
 * A board is represented like so:
 ```
