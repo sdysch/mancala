@@ -153,15 +153,28 @@ def run_trials_of_different_agents(player_one_strategies, player_two_strategies,
     print(f'Starting {n_strats} strategy simulations of {args.ngames} games...')
     start_time = time.time()
 
-    strats_run = 0
     dict_list = []
-    for s1 in player_one_strategies:
-        for s2 in player_two_strategies:
-            strat_time = time.time()
 
-            strats_run += 1
-            data = run_sims(s1, s2, args)
-            dict_list.append(data)
+    # multiprocess
+    if args.parallel:
+        from concurrent.futures import ProcessPoolExecutor
+        from itertools import repeat
+        with ProcessPoolExecutor(max_workers=args.max_workers) as executor:
+            results = executor.map(run_sims, player_one_strategies, player_two_strategies, repeat(args, n_strats))
 
-    print(f'\nRan all strategy simulations in {time.time() - start_time} seconds')
+            for result in results:
+                dict_list.append(result)
+
+    # sequential
+    else:
+        strats_run = 0
+        for s1 in player_one_strategies:
+            for s2 in player_two_strategies:
+                strat_time = time.time()
+
+                strats_run += 1
+                data = run_sims(s1, s2, args)
+                dict_list.append(data)
+
+        print(f'\nRan all strategy simulations in {time.time() - start_time} seconds')
     return get_result().append(dict_list)
