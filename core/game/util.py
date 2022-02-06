@@ -2,16 +2,9 @@
 
 # ====================================================================================================
 
-def run_trials(args):
-    """Iterate through a full mancala game, args.ngames times"""
+def get_result():
 
     import pandas as pd 
-    import time
-
-    from progress.bar import IncrementalBar
-
-    n_games = args.ngames
-
     # data structure to store results
     columns = [
         'player_1_score',
@@ -28,25 +21,27 @@ def run_trials(args):
         'player_two_strategy',
     ]
 
-    result = pd.DataFrame(columns=columns)
+    return pd.DataFrame(columns=columns)
 
-    if args.n_marbles is not None and args.n_marbles > 0:
-        print(f'Setting initial number of marbles to {args.n_marbles}')
+# ====================================================================================================
 
-    start_time = time.time()
+def run_sims(s1, s2, args):
+    import time
+    from progress.bar import IncrementalBar
 
-    if args.make_runtime_plots:
-        runtime = []
+    n_games = args.ngames
+
+    result_list = []
 
     # Start the loop over n_games simulations
-    # TODO multithreading? This is essentially O(n), so it probably won't do much. Maybe multi-processing?
-    message = f'Running {n_games} iterations of Mancala with player one and two strategies: "{args.player_one_strategy}" and "{args.player_two_strategy}", respectively.'
+    start_time = time.time()
+    message = f'Running {n_games} iterations of Mancala with player one and two strategies: "{s1}" and "{s2}", respectively.'
     print(message)
     with IncrementalBar('Progress: ', max=n_games) as bar:
         for game in range(n_games):
 
-            player_one = get_player(args.player_one_strategy, 1)
-            player_two = get_player(args.player_two_strategy, 2)
+            player_one = get_player(s1, 1)
+            player_two = get_player(s2, 2)
 
             # use game iteration as seed for reproducability, ensuring seed is never 0
             if hasattr(player_one, 'set_seed'):
@@ -58,26 +53,13 @@ def run_trials(args):
                 player_two.set_seed(seed_two)
 
             # run this game according to the defined rules and the player strategies for move choice
-            df = run_game(player_one, player_two, game+1, args)
-            result = result.append(df, ignore_index=True)
+            data = run_game(player_one, player_two, game+1, args)
+            result_list.append(data)
 
-            if args.make_runtime_plots:
-                runtime.append(time.time() - start_time)
             bar.next()
 
     print(f'Ran {n_games} iterations in {time.time() - start_time} seconds')
-
-    # runtime plots
-    if args.make_runtime_plots:
-        from core.plotting.util import make_runtime_plot
-        make_runtime_plot(runtime, args.output)
-
-    if args.make_runtime_plots and args.save_runtime_list:
-        # pickle list
-        import pickle
-        pickle.dump(runtime, open(f'plots/{args.output}.p', 'wb'))
-
-    return result
+    return get_result().append(result_list)
 
 # ====================================================================================================
 
@@ -165,71 +147,21 @@ def get_player(strategy, player_number):
 def run_trials_of_different_agents(player_one_strategies, player_two_strategies, args):
     """Iterate through a full mancala game, args.ngames times, for each strategy combination in player_*_strategies"""
 
-    import pandas as pd 
     import time
 
-    from progress.bar import IncrementalBar
-
-    n_games = args.ngames
-
-    # data structure to store results
-    columns = [
-        'player_1_score',
-        'player_2_score',
-        'player_1_moves',
-        'player_2_moves',
-        'total_moves',
-        'n_start_marbles',
-        'n_cups',
-        'player_1_result',
-        'player_2_result',
-        'first_move',
-        'player_one_strategy',
-        'player_two_strategy',
-    ]
-
-    result = pd.DataFrame(columns=columns)
-
-    if args.n_marbles is not None and args.n_marbles > 0:
-        print(f'Setting initial number of marbles to {args.n_marbles}')
-
     n_strats = len(player_one_strategies) * len(player_two_strategies)
-    print(f'Starting {n_strats} strategy simulations of {n_games} games...')
+    print(f'Starting {n_strats} strategy simulations of {args.ngames} games...')
     start_time = time.time()
 
     strats_run = 0
     dict_list = []
-    for player_one_strat in player_one_strategies:
-        for player_two_strat in player_two_strategies:
+    for s1 in player_one_strategies:
+        for s2 in player_two_strategies:
             strat_time = time.time()
 
             strats_run += 1
+            data = run_sims(s1, s2, args)
+            dict_list.append(data)
 
-            # Start the loop over n_games simulations
-            message = f'Running {n_games} iterations of Mancala with player one and two strategies: "{player_one_strat}"'
-            message += f' and "{player_two_strat}", respectively. {strats_run}/{n_strats} done in {time.time() - start_time} seconds'
-            print(message)
-            with IncrementalBar('Progress: ', max=n_games) as bar:
-                for game in range(n_games):
-
-                    player_one = get_player(player_one_strat, 1)
-                    player_two = get_player(player_two_strat, 2)
-
-                    # use game iteration as seed for reproducability, ensuring seed is never 0
-                    if hasattr(player_one, 'set_seed'):
-                        seed_one = 2 * n_games + game
-                        player_one.set_seed(seed_one)
-
-                    if hasattr(player_two, 'set_seed'):
-                        seed_two = 2 * n_games - game
-                        player_two.set_seed(seed_two)
-
-                    # run this game according to the defined rules and the player strategies for move choice
-                    data = run_game(player_one, player_two, game+1, args)
-                    dict_list.append(data)
-
-                    bar.next()
-
-                print(f'\nRan {n_games} iterations in {time.time() - strat_time} seconds')
     print(f'\nRan all strategy simulations in {time.time() - start_time} seconds')
-    return result.append(dict_list)
+    return get_result().append(dict_list)
