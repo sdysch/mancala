@@ -52,7 +52,7 @@ if __name__ == '__main__':
             help = 'Run jobs in parallel (multiprocess)')
 
     parser.add_argument('--max-workers',
-            default = 2,
+            default = 4,
             type = int,
             help = 'Maximum number of parallel workers')
 
