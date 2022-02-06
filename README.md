@@ -50,6 +50,7 @@ Bucket  1 2 3 4 5 6
 - [X] Completely rewrite make_player_turn - it is buggy (player switching is just plain wrong)
 - [ ] Loop over different marble and cups
 - [ ] Minimax
+- [ ] Multiprocessing
 
 
 ## Investigations
