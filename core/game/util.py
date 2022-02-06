@@ -198,6 +198,7 @@ def run_trials_of_different_agents(player_one_strategies, player_two_strategies,
     start_time = time.time()
 
     strats_run = 0
+    dict_list = []
     for player_one_strat in player_one_strategies:
         for player_two_strat in player_two_strategies:
             strat_time = time.time()
@@ -224,11 +225,11 @@ def run_trials_of_different_agents(player_one_strategies, player_two_strategies,
                         player_two.set_seed(seed_two)
 
                     # run this game according to the defined rules and the player strategies for move choice
-                    df = run_game(player_one, player_two, game+1, args)
-                    result = result.append(df, ignore_index=True)
+                    data = run_game(player_one, player_two, game+1, args)
+                    dict_list.append(data)
 
                     bar.next()
 
                 print(f'\nRan {n_games} iterations in {time.time() - strat_time} seconds')
     print(f'\nRan all strategy simulations in {time.time() - start_time} seconds')
-    return result
+    return result.append(dict_list)
