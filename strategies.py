@@ -1,8 +1,11 @@
 def main(args):
 
-    from core.game.util import run_trials
+    from core.game.util import run_sims
 
-    result = run_trials(args)
+    if args.n_marbles is not None and args.n_marbles > 0:
+        print(f'Setting initial number of marbles to {args.n_marbles}')
+
+    result = run_sims(args.player_one_strategy, args.player_two_strategy, args)
 
     output = f'data/{args.output}.csv'
     print(f'Saving output to {output}')
@@ -39,16 +42,6 @@ if __name__ == '__main__':
             default = 'output', 
             type = str,
             help = 'Stamp for outputs')
-
-    parser.add_argument('--make-runtime-plots',
-            default = True,
-            type = bool,
-            help = 'Plot runtime vs number of games simulated')
-
-    parser.add_argument('--save-runtime-list',
-            default = True,
-            type = bool,
-            help = 'Pickle list of runtime vs n_games')
 
     parser.add_argument('-v', '--verbose',
             action = 'store_true',

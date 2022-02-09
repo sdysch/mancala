@@ -46,6 +46,16 @@ if __name__ == '__main__':
             action = 'store_true',
             help = 'Verbose output')
 
+    parser.add_argument('-p', '--parallel',
+            default = False,
+            action = 'store_true',
+            help = 'Run jobs in parallel (multiprocess)')
+
+    parser.add_argument('--max-workers',
+            default = 4,
+            type = int,
+            help = 'Maximum number of parallel workers')
+
     args = parser.parse_args()
 
     main(args)
