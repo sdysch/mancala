@@ -82,7 +82,7 @@ class MaxScorePlayer(Player):
                 for move in board_copy.available_moves(self.player):
                     moves_scores[move] = self.get_move_score(move, board_copy)
                 choice = self.get_move_with_max_score(moves_scores)
-                return self.score(board_copy) + moves_scores[choice]
+                return self.score(board_copy)
 
             # if previous move ended in empty bucket, players switch and we are done with this move tree.
             elif board_copy.last_bucket_empty():
