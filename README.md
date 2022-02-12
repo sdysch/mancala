@@ -1,3 +1,4 @@
+![build](https://github.com/sdysch/mancala/actions/workflows/test/badge.svg)
 # mancala
 Exploring different strategies for [mancala](https://en.wikipedia.org/wiki/Mancala)
 
