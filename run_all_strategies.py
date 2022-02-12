@@ -9,6 +9,7 @@ def main(args):
             'exact_max_score',
             'max_marbles',
             'max_moves',
+            'min_max',
     ]
 
     player_one_strategies = all_strategies
