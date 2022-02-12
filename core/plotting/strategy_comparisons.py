@@ -35,13 +35,7 @@ def make_prob_matrix(data, title, savename):
 def main(args):
     df = pd.read_csv(args.input)
 
-    all_strategies = [
-            'random',
-            'max_score',
-            'exact_random',
-            'exact_max_score',
-            'max_marbles',
-    ]
+    all_strategies = df['player_one_strategy'].unique()
 
     player_1_win_probs = pd.DataFrame(columns=all_strategies, index=all_strategies, dtype='float')
     draw_probs         = pd.DataFrame(columns=all_strategies, index=all_strategies, dtype='float')
