@@ -18,6 +18,7 @@ Exploring different strategies for the board game [mancala](https://en.wikipedia
 | Exact Max Score | Same as Exact Random, except that the fallback strategy is Max score                                                                    |
 | Max marbles     | Choose the move which has the most marbles. If multiple moves fit this criteria, choose randomly                                        |
 | Max moves       | The move which maximises the number of moves a player makes is chosen. If multiple moves give the same number, choose randomly          |
+| MinMax          | Minimax algorithm (with configurable depth)                                                                                             |
 
 
 

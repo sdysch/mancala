@@ -33,6 +33,11 @@ def run_sims(s1, s2, args):
 
     result_list = []
 
+    if s1 == 'min_max' or s2 == 'min_max':
+        print(f'[INFO] - Setting min_max depth to {args.depth}')
+        if args.depth >= 4:
+            print(f'[WARN] - min_max depth {args.depth} can be very computationally expensive. Now is time to make a coffee')
+
     # Start the loop over n_games simulations
     start_time = time.time()
     message = f'Running {n_games} iterations of Mancala with player one and two strategies: "{s1}" and "{s2}", respectively.'
@@ -51,6 +56,12 @@ def run_sims(s1, s2, args):
             if hasattr(player_two, 'set_seed'):
                 seed_two = 2 * n_games - game
                 player_two.set_seed(seed_two)
+
+            if s1 == 'min_max':
+                player_one.depth = args.depth
+
+            if s2 == 'min_max':
+                player_two.depth = args.depth
 
             # run this game according to the defined rules and the player strategies for move choice
             data = run_game(player_one, player_two, game+1, args)
@@ -142,6 +153,10 @@ def get_player(strategy, player_number):
     elif strategy == 'max_moves':
         from core.players.MaxMovesPlayer import MaxMovesPlayer
         return MaxMovesPlayer(player_number)
+
+    elif strategy == 'min_max':
+        from core.players.MinMaxPlayer import MinMaxPlayer
+        return MinMaxPlayer(player_number)
 
     else:
         raise ValueError(f'Strategy {strategy} is not recognised')
