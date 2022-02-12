@@ -2,7 +2,7 @@
 # mancala
 Exploring different strategies for the board game [mancala](https://en.wikipedia.org/wiki/Mancala), also known as Kalaha.
 
-<img src="figs/mancala.jpg" width="1000">
+<img src="figs/mancala.jpg" width="500">
 
 ## Rules
 * WIP
