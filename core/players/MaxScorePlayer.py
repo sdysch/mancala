@@ -60,6 +60,7 @@ class MaxScorePlayer(Player):
     def get_move_score(self, move, board, first_move=True):
 
         # FIXME - Don't repeat yourself! Re-use Board.iterate_until_over!
+        # probably need to modify Board.iterate_until_over, to return the new player score?
 
         from copy import deepcopy
         board_copy = deepcopy(board)
@@ -82,7 +83,7 @@ class MaxScorePlayer(Player):
                 for move in board_copy.available_moves(self.player):
                     moves_scores[move] = self.get_move_score(move, board_copy)
                 choice = self.get_move_with_max_score(moves_scores)
-                return self.score(board_copy)
+                return self.score(board_copy) + moves_scores[choice]
 
             # if previous move ended in empty bucket, players switch and we are done with this move tree.
             elif board_copy.last_bucket_empty():
