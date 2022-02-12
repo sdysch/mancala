@@ -9,3 +9,13 @@ jobs:
             - run: |
                 source setup.sh
                 python3 -m unittest discover tests
+    Run:
+        runs-on: "ubuntu-latest"
+        needs: Test
+        steps:
+            - name: "Checkout repository"
+              uses: "actions/checkout@v2"
+            - run: |
+                source setup.sh
+                python3 run_all_strategies.py --ngames=100
+                python3 core/plotting/strategy_comparisons.py -i data/output.csv
