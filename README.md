@@ -9,7 +9,9 @@ Exploring different strategies for the board game [mancala](https://en.wikipedia
 * WIP
 
 ## Strategies
+
 | Strategy        | Explanation                                                                                                       |
+| --------        | -----------                                                                                                       |
 | Random          | Moves are chosen with an equal probability                                                                        |
 | Max score       | The move which maximises the player's score is chosen. If multiple moves give the same max score, choose randomly |
 | Exact Random    | If possible, choose a move which ends in player's goal. Otherwise, use random strategy                            |
