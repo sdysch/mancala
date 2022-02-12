@@ -1,9 +1,9 @@
 # To do list
 ## Strategies
 - [ ] Minimax algorithm:
-	* Implement alpha/beta pruning (for no crazy runtimes)
+	- [ ] Implement alpha/beta pruning (for no crazy runtimes)
 - [ ] Reinforecment learning
-	* Check out keras-rl and gym environment
+	- [ ] Check out keras-rl and gym environment
 
 ## TODO
 - [X] Move mancala "rules" into Board class
@@ -11,11 +11,10 @@
 - [X] Max moves agent
 - [X] max goal (random fall back)
 - [X] Completely rewrite make_player_turn - it is buggy (player switching is just plain wrong)
+- [X] Minimax
+- [X] Multiprocessing
 - [ ] Loop over different marble and cups
-- [ ] Minimax
-- [ ] Multiprocessing
 
 
 ## Investigations
-- [ ] Win rate vs first move for different agents (2D plot)
-- [ ] Win rate vs n_marbles/n_buckets
+- [ ] Win/lose/draw rate vs n_marbles (too expensive for different strategies?)
