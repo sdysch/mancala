@@ -1,7 +1,8 @@
 ![Test](https://github.com/sdysch/mancala/actions/workflows/test.yml/badge.svg)
 # mancala
 Exploring different strategies for the board game [mancala](https://en.wikipedia.org/wiki/Mancala), also known as Kalaha.
-<img src="figs/mancala.jpg" width="48">
+
+<img src="figs/mancala.jpg" width="100">
 
 ## Rules
 * WIP
