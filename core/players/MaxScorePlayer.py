@@ -84,11 +84,9 @@ class MaxScorePlayer(Player):
                 choice = self.get_move_with_max_score(moves_scores)
                 return self.score(board_copy) + moves_scores[choice]
 
-            # if previous move ended in empty bucket, capture rule and players switch
-            # we are done with this move tree.
+            # if previous move ended in empty bucket, players switch and we are done with this move tree.
             elif board_copy.last_bucket_empty():
-                new_marbles = board_copy.get_opponent_cups(self.player)[board_copy.position - 1]
-                return self.score(board_copy) + new_marbles
+                return self.score(board_copy)
 
             # if none of the previous rules apply, we must have ended on a non-empty bucket
             # carry on iterating
