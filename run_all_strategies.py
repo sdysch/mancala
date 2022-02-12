@@ -29,7 +29,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
     parser.add_argument('-n', '--ngames',
-            default = 5000,
+            default = 1000,
             type = int,
             help = 'Number of independent mancala games to run')
 
