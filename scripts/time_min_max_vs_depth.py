@@ -33,9 +33,13 @@ def run_sims(s1, s2, args):
 
                 if s1 == 'min_max':
                     player_one.depth = depth
+                    if args.no_alpha_beta_pruning:
+                        player_one.pruning = False
 
                 if s2 == 'min_max':
                     player_two.depth = depth
+                    if args.no_alpha_beta_pruning:
+                        player_two.pruning = False
 
                 # run this game according to the defined rules and the player strategies for move choice
                 data = run_game(player_one, player_two, game+1, args)
@@ -58,7 +62,7 @@ def main(args):
     #result = run_sims('min_max', 'min_max', args)
     result = run_sims('min_max', 'max_score', args)
 
-    output = f'data/time_min_max_vs_depth.csv'
+    output = f'data/{args.output}.csv'
     print(f'Saving output to {output}')
     result.to_csv(output, index=False)
 
@@ -74,6 +78,10 @@ if __name__ == '__main__':
             type = int,
             help = 'Number of independent mancala games to run')
 
+    parser.add_argument('-o', '--output',
+            required = True,
+            help = 'output file')
+
     parser.add_argument('--max-depth',
             default = 7,
             type = int,
@@ -88,6 +96,11 @@ if __name__ == '__main__':
     parser.add_argument('-v', '--verbose',
             action = 'store_true',
             help = 'Verbose output')
+
+    parser.add_argument('--no-alpha-beta-pruning',
+            default = False,
+            action = 'store_true',
+            help = 'Switch off alpha-beta pruning for the min_max strategy')
 
     args = parser.parse_args()
 
