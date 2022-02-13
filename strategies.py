@@ -52,6 +52,11 @@ if __name__ == '__main__':
             type = int,
             help = 'Max depth of min_max strategy')
 
+    parser.add_argument('--no-alpha-beta-pruning',
+            default = False,
+            action = 'store_true',
+            help = 'Switch off alpha-beta pruning for the min_max strategy')
+
     args = parser.parse_args()
 
     main(args)
