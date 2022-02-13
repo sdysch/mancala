@@ -1,7 +1,7 @@
 # To do list
 ## Strategies
-- [ ] Minimax algorithm:
-	- [ ] Implement alpha/beta pruning (for no crazy runtimes)
+- [X] Minimax algorithm:
+	- [X] Implement alpha/beta pruning (for no crazy runtimes)
 - [ ] Reinforecment learning
 	- [ ] Check out keras-rl and gym environment
 
