@@ -38,6 +38,9 @@ def run_sims(s1, s2, args):
         if args.depth >= 4:
             print(f'[WARN] - min_max depth {args.depth} can be very computationally expensive. Now is time to make a coffee')
 
+        if args.no_alpha_beta_pruning:
+            print('Alpha beta pruning is switched off')
+
     # Start the loop over n_games simulations
     start_time = time.time()
     message = f'Running {n_games} iterations of Mancala with player one and two strategies: "{s1}" and "{s2}", respectively.'
@@ -59,9 +62,13 @@ def run_sims(s1, s2, args):
 
             if s1 == 'min_max':
                 player_one.depth = args.depth
+                if args.no_alpha_beta_pruning:
+                    player_one.pruning = False
 
             if s2 == 'min_max':
                 player_two.depth = args.depth
+                if args.no_alpha_beta_pruning:
+                    player_two.pruning = False
 
             # run this game according to the defined rules and the player strategies for move choice
             data = run_game(player_one, player_two, game+1, args)
