@@ -14,6 +14,7 @@
 - [X] Minimax
 - [X] Multiprocessing
 - [ ] Loop over different marble and cups
+- [ ] If len(available_moves) == 1: choose that move - might gain a speed up :)
 
 
 ## Investigations
