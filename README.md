@@ -8,11 +8,11 @@ Exploring different strategies for the board game [mancala](https://en.wikipedia
 * Mancala is a two-player zero-sum game, where players compete to capture more marbles than their opponent.
 * Each player has six buckets, initially containing four marbles. They also have a score bucket.
 * A move is made by player one choosing one of their six buckets, collecting all their marbles.
-* The player then distributes the marbles in subsequent buckets, including the player's score bucket, moving in a clockwise direction until no marbles remain.
+* The player then distributes the marbles in subsequent buckets, including the player's score bucket, moving in a anti-clockwise direction until no marbles remain.
 * The opponent's score bucket is skipped over.
 
 * Some further rules are applied:
-	* If the player ends in a non-zero bucket, then they collect the stones in that bucket and continue moving clockwise around the board.
+	* If the player ends in a non-zero bucket, then they collect the stones in that bucket and continue moving anti-clockwise around the board.
 	* If the player ends their turn in their score bucket, then they get to choose a new move from their non-zero buckets.
 	* If the player ends in an empty bucket, then the player's turn is over.
 * The game is over when either half of the marbles have been captured, or one player manages to empty all the buckets on their side.
