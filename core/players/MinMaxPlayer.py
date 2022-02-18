@@ -49,6 +49,9 @@ class MinMaxPlayer(Player):
     def move(self, board):
         moves = board.available_moves(self.player)
 
+        if len(moves) == 1:
+            return moves[0]
+
         alpha = -1 * MinMaxPlayer._LARGE_NUMBER
         beta  = MinMaxPlayer._LARGE_NUMBER
         scores = { move : self.min_max(move, board, self.depth, True, alpha, beta) for move in moves }

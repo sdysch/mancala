@@ -47,6 +47,9 @@ class MaxScorePlayer(Player):
 
         moves = board.available_moves(self.player)
 
+        if len(moves) == 1:
+            return moves[0]
+
         initial_score = board.get_player_goal(self.player)
         score_move_holder = {}
 
