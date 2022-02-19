@@ -13,9 +13,6 @@
 - [X] Completely rewrite make_player_turn - it is buggy (player switching is just plain wrong)
 - [X] Minimax
 - [X] Multiprocessing
-- [ ] Loop over different marble and cups
-- [ ] If len(available_moves) == 1: choose that move - might gain a speed up :)
-
-
-## Investigations
-- [ ] Win/lose/draw rate vs n_marbles (too expensive for different strategies?)
+- [X] Loop over different marble and cups
+- [X] If len(available_moves) == 1: choose that move - might gain a speed up :)
+- [X] Win/lose/draw rate vs n_marbles (too expensive for different strategies?)
