@@ -14,16 +14,16 @@ def calculate_prob(data, column, value):
 # ====================================================================================================
 
 def make_prob_matrix(data, title, savename):
-    fig, ax = plt.subplots(1, 1, figsize=(10, 10))
+    fig, ax = plt.subplots(1, 1, figsize=(8, 8))
 
     cmap = sns.color_palette("light:b", as_cmap=True)
     sns.heatmap(data, annot=True, linewidths=0.5, ax=ax, cmap=cmap, square=True)
 
-    ax.set_xlabel('player 1 strategy', fontsize=16)
+    ax.set_xlabel('player 1 strategy', fontsize=12)
     ax.set_xticklabels(data.columns, rotation=45)
 
-    ax.set_ylabel('player 2 strategy', fontsize=16)
-    #ax.set_yticklabels(data.index, rotation=65)
+    ax.set_ylabel('player 2 strategy', fontsize=12)
+    ax.set_yticklabels(data.index, rotation=65)
 
     ax.set_title(title, fontsize=16)
 
