@@ -19,7 +19,7 @@ Exploring different strategies for the board game [mancala](https://en.wikipedia
 * Any remaining marbles on each player's side are added to their total. The winner is the player with the most marbles
 
 ## Blog post
-* WIP
+* A short article describing this work can be found [here](https://sdysch.github.io/Simulating_Mancala_part_1/)
 
 ## Strategies
 
