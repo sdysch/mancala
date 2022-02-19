@@ -46,7 +46,8 @@ def run_sims(s1, s2, args):
 
 def main(args):
 
-    result = run_sims('min_max', 'min_max', args)
+    #result = run_sims('min_max', 'min_max', args)
+    result = run_sims('random', 'random', args)
 
     output = f'data/{args.output}.csv'
     print(f'Saving output to {output}')
